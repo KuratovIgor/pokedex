@@ -1,52 +1,19 @@
 import { FastifyInstance } from 'fastify'
 import { Static, Type } from '@sinclair/typebox'
 
-type Pokemon = {
-  id: number,
-  number: string,
-  name: string,
-  description: string
-}
-
-export const pokemon: Pokemon[] = [
-  {
-    id: 1,
-    number: '001',
-    name: 'Bulbasaur',
-    description: 'There is a plant seed on its back right from the day this Pokémon' +
-      ' is born. The seed slowly grows larger.'
-  },
-  {
-    id: 2,
-    number: '002',
-    name: 'Ivysaur',
-    description: 'When the bulb on its back grows large, it appears' +
-      ' to lose the ability to stand on its hind legs.'
-  },
-  {
-    id: 3,
-    number: '003',
-    name: 'Venusaur',
-    description: 'Its plant blooms when it is absorbing solar' +
-      ' energy. It stays on the move to seek sunlight.'
-  },
-  {
-    id: 4,
-    number: '004',
-    name: 'Charmander',
-    description: 'It has a preference for hot things. When it' +
-      ' rains, steam is said to spout from the tip of its tail.'
-  }
-]
-
-const PokemonListSchema = Type.Array(
+const PokemonListSchema =
   Type.Object({
-    id: Type.Optional(Type.Number()),
-    number: Type.Optional(Type.String()),
-    name: Type.Optional(Type.String()),
-    description: Type.Optional(Type.String())
+    count: Type.Number(),
+    next: Type.String(),
+    previous: Type.String(),
+    results: Type.Array(
+      Type.Object({
+        name: Type.String(),
+        url: Type.String()
+      })
+    )
   })
-)
+
 
 const ResponseSchema = Type.Object({
   pokemon: PokemonListSchema,
@@ -68,9 +35,21 @@ const pokemonListRoute = (fastify: FastifyInstance) => {
     },
     async (req, repl) => {
       try {
+        const pokemonList = await fastify.axios.get('https://pokeapi.co/api/v2/pokemon')
+        console.log(pokemonList.data)
+
+        /*let i = 0
+
+        while (pokemonList.data.next != null){
+          const res = await fastify.axios.get(`https://pokeapi.co/api/v2/pokemon?offset=${i}&limit=20`)
+          console.log(res.data.results)
+          i += 20
+        }*/
+
         await repl.send({
-          pokemon: pokemon
+          pokemon: pokemonList.data
         })
+
       } catch (e) {
         fastify.log.error(e)
       }
