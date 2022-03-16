@@ -1,6 +1,6 @@
 import { FastifyInstance } from 'fastify'
 import { Static, Type } from '@sinclair/typebox'
-import { PokemonMapper } from '../../mappers/pokemonMapper';
+import { PokemonMapper } from '../../mappers/PokemonMapper'
 
 const PaginationSchema =
   Type.Object({
@@ -9,14 +9,18 @@ const PaginationSchema =
   })
 
 const PokemonListSchema =
-  Type.Object({
-    results: Type.Array(
+    Type.Array(
       Type.Object({
+        image: Type.String(),
+        id: Type.Number(),
         name: Type.String(),
-        url: Type.String()
+        abilities: Type.Array(
+          Type.Object({
+            name: Type.String()
+          })
+        )
       })
-    ),
-  })
+    )
 
 const ParamSchema =
   Type.Object({
@@ -26,16 +30,17 @@ const ParamSchema =
 
 const ResponseSchema = Type.Object({
   pokemon: PokemonListSchema,
-  paginationInfo: PaginationSchema
+  paginationInfo: PaginationSchema,
+  success: Type.Boolean()
 })
 export type ResponseSchemaType = Static<typeof ResponseSchema>
 export type PaginationSchemaType = Static<typeof PaginationSchema>
-export type ParamSchemaType = Static<typeof ParamSchema>
+export type QuerySchemaType = Static<typeof ParamSchema>
 
 const pokemonListRoute = (fastify: FastifyInstance) => {
   return fastify.get<{
     Response: ResponseSchemaType,
-    Querystring: ParamSchemaType
+    Querystring: QuerySchemaType
   }>(
     '/api/pokemon',
     {
@@ -47,30 +52,47 @@ const pokemonListRoute = (fastify: FastifyInstance) => {
     },
     async (req, repl) => {
       try {
-        const pokemonList = await fastify.axios.get('https://pokeapi.co/api/v2/pokemon',  {
+        const pokemonListFromApi = await fastify.axios.get('https://pokeapi.co/api/v2/pokemon',  {
           params: {
             ...req.query,
           }
         })
 
+        const newPokemonList = await getPokemonForListing(pokemonListFromApi, fastify)
+
         const paginationInfo = PokemonMapper.getPaginationInfo(
-          pokemonList.data.count,
+          pokemonListFromApi.data.count,
           req.query.offset,
           req.query.limit
         )
 
-        console.log(paginationInfo)
-
         await repl.send({
-          pokemon: pokemonList.data,
-          paginationInfo
+          pokemon: newPokemonList,
+          paginationInfo,
+          success: false
         })
 
-      } catch (e) {
-        fastify.log.error(e)
+      } catch (e: any) {
+        await repl.send({
+          success: false
+        })
       }
     }
   )
+}
+
+async function getPokemonForListing(api, fastify){
+  let pokemonList: any[] = []
+
+  for (let item of api.data.results){
+    const url = await fastify.axios.get(item.url)
+
+    const pokemonInfo = PokemonMapper.getPokemonInfo(item.name, url.data)
+
+    pokemonList.push(pokemonInfo)
+  }
+
+  return pokemonList
 }
 
 export default pokemonListRoute
