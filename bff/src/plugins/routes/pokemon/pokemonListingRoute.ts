@@ -1,32 +1,26 @@
 import { FastifyInstance } from 'fastify'
 import { Static, Type } from '@sinclair/typebox'
 import { PokemonMapper } from '../../mappers/PokemonMapper'
+import type { PokemonType } from '../../mappers/PokemonMapper'
 
-const PaginationSchema =
+const PaginationSchema = Type.Object({
+  total: Type.Number(),
+  current: Type.Number()
+})
+
+const PokemonListSchema = Type.Array(
   Type.Object({
-    total: Type.Number(),
-    current: Type.Number()
+    image: Type.String(),
+    id: Type.Number(),
+    name: Type.String(),
+    abilities: Type.Array(Type.String())
   })
+)
 
-const PokemonListSchema =
-    Type.Array(
-      Type.Object({
-        image: Type.String(),
-        id: Type.Number(),
-        name: Type.String(),
-        abilities: Type.Array(
-          Type.Object({
-            name: Type.String()
-          })
-        )
-      })
-    )
-
-const ParamSchema =
-  Type.Object({
-    offset: Type.Number(),
-    limit: Type.Number()
-  })
+const ParamSchema = Type.Object({
+  offset: Type.Number(),
+  limit: Type.Number()
+})
 
 const ResponseSchema = Type.Object({
   pokemon: PokemonListSchema,
@@ -58,9 +52,9 @@ const pokemonListRoute = (fastify: FastifyInstance) => {
           }
         })
 
-        const newPokemonList = await getPokemonForListing(pokemonListFromApi, fastify)
+        const newPokemonList = await getPokemonListing(pokemonListFromApi, fastify)
 
-        const paginationInfo = PokemonMapper.getPaginationInfo(
+        const paginationInfo = PokemonMapper.mapPaginationInfoToFrontend(
           pokemonListFromApi.data.count,
           req.query.offset,
           req.query.limit
@@ -81,18 +75,18 @@ const pokemonListRoute = (fastify: FastifyInstance) => {
   )
 }
 
-async function getPokemonForListing(api, fastify){
-  let pokemonList: any[] = []
+async function getPokemonListing(pokemonList, fastify){
+  let result: PokemonType[] = []
 
-  for (let item of api.data.results){
-    const url = await fastify.axios.get(item.url)
+  for (let item of pokemonList.data.results){
+    const pokemonFromApi = await fastify.axios.get(item.url)
 
-    const pokemonInfo = PokemonMapper.getPokemonInfo(item.name, url.data)
+    const pokemonInfo = PokemonMapper.mapPokemonInfoToFrontend(item.name, pokemonFromApi.data)
 
-    pokemonList.push(pokemonInfo)
+    result.push(pokemonInfo)
   }
 
-  return pokemonList
+  return result
 }
 
 export default pokemonListRoute

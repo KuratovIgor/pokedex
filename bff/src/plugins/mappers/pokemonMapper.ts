@@ -3,19 +3,15 @@ import {
   ResponseSchemaType
 } from '~/plugins/routes/pokemon/pokemonListingRoute'
 
-type AbilityType = {
-  name: string
-}
-
-type PokemonType = {
+export type PokemonType = {
   image: string,
   id: number,
   name: string,
-  abilities: AbilityType[]
+  abilities: string[]
 }
 
 export class PokemonMapper {
-  static getPaginationInfo = (
+  static mapPaginationInfoToFrontend = (
     count: number,
     offset: number,
     limit: number
@@ -26,22 +22,12 @@ export class PokemonMapper {
     return { total, current }
   }
 
-  static getPokemonInfo = (name: string, abilityInfo: any): PokemonType => {
-    let pokemon: PokemonType = {
-      image: '',
-      id: 0,
-      name: '',
-      abilities: []
+  static mapPokemonInfoToFrontend = (name: string, pokemon: any): PokemonType => {
+    return {
+      image: pokemon.sprites.other['official-artwork'].front_default,
+      id: pokemon.id,
+      name,
+      abilities: pokemon.abilities.map((item) => item.ability.name)
     }
-
-    pokemon.image = abilityInfo.sprites.other['official-artwork'].front_default
-    pokemon.id = abilityInfo.id
-    pokemon.name = name
-
-    for (let ability of abilityInfo.abilities)
-      pokemon.abilities.push({ name: ability.ability.name })
-
-    return pokemon
   }
-
 }
