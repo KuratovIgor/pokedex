@@ -17,7 +17,11 @@ export class PokemonMapper {
     limit: number
   ): PaginationSchemaType => {
     const total = Math.ceil(count / limit)
-    const current = Math.ceil(offset / limit)
+    let current = Math.ceil(offset / limit)
+
+    if (current == 0){
+      current = 1
+    }
 
     return { total, current }
   }

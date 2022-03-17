@@ -1,1 +1,1 @@
-export { default as pokemonListRoute } from './pokemon/pokemonListingRoute'
+export { default as pokemonListRoute } from './pokemon/PokemonListingRoute'

@@ -63,7 +63,7 @@ const pokemonListRoute = (fastify: FastifyInstance) => {
         await repl.send({
           pokemon: newPokemonList,
           paginationInfo,
-          success: false
+          success: true
         })
 
       } catch (e: any) {
