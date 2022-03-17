@@ -34,8 +34,8 @@ module.exports = {
       "typescript": {}
     }
   },
-  parser: 'babel-eslint',
+  parser: "@typescript-eslint/parser",
   parserOptions: {
-    parser: "@typescript-eslint/parser"
+    sourceType: 'module'
   },
 }
