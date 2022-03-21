@@ -1,6 +1,5 @@
 import { Static, Type } from '@sinclair/typebox'
 import { FastifyInstance } from 'fastify/types/instance'
-import { pokemon } from './pokemonListingRoute'
 import { PokemonDetailMapper } from '../../mappers/pokemonDetailMapper'
 
 const PokemonSchema = Type.Object({
@@ -12,11 +11,12 @@ const PokemonSchema = Type.Object({
   weight: Type.Number(),
   abilities: Type.Array(Type.String()),
   stats: Type.Array(Type.String()),
-  /*evolution: Type.Array(Type.Object({
+  evolution: Type.Array(Type.Object({
     name: Type.String(),
     id: Type.Number(),
-    image: Type.String()
-  }))*/
+    image: Type.String(),
+    types: Type.Array(Type.String())
+  }))
 })
 
 const ResponseSchema = Type.Object({
@@ -50,11 +50,12 @@ const pokemonRoute = (fastify: FastifyInstance) => {
           const pokemonSpecies = await fastify.axios.get(pokemonFromApi.data.species.url)
           const pokemonEvolution = await fastify.axios.get(pokemonSpecies.data.evolution_chain.url)
 
-          const detailInfo = PokemonDetailMapper.mapDetailInfoToFrontend(pokemonFromApi.data, pokemonEvolution)
+          // eslint-disable-next-line max-len
+          const detailInfo = PokemonDetailMapper.mapDetailInfoToFrontend(pokemonFromApi.data, pokemonEvolution.data.chain)
 
-          await repl.send({
+         /* await repl.send({
             pokemon: detailInfo
-          })
+          })*/
         }
       } catch (e) {
         fastify.log.error(e)
