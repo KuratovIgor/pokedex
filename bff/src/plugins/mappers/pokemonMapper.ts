@@ -7,7 +7,7 @@ export type PokemonType = {
   image: string,
   id: number,
   name: string,
-  abilities: string[]
+  types: string[]
 }
 
 export class PokemonMapper {
@@ -31,7 +31,7 @@ export class PokemonMapper {
       image: pokemon.sprites.other['official-artwork'].front_default,
       id: pokemon.id,
       name,
-      abilities: pokemon.abilities.map((item) => item.ability.name)
+      types: pokemon.types.map((item) => item.type.name)
     }
   }
 }

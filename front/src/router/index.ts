@@ -1,10 +1,28 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
+import ListingPage from '@/pages/ListingPage.vue'
+import DetailPage from '@/pages/DetailPage.vue'
 import Layout from '@/layout/Layout.vue'
 
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
     component: Layout,
+    name: 'Layout',
+    redirect: {
+      name: 'ListingPage',
+    },
+    children: [
+      {
+        path: '/listing-page',
+        name: 'ListingPage',
+        component: ListingPage,
+      },
+      {
+        path: '/detail-page',
+        name: 'DetailPage',
+        component: DetailPage,
+      },
+    ],
   },
 ]
 
