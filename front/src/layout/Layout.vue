@@ -1,6 +1,6 @@
 <template>
   <div class="body">
-    <header-component />
+    <header-component class="body__header" />
     <div class="body__center">
       <router-view />
     </div>
@@ -24,6 +24,10 @@ export default defineComponent({
   display: flex;
   flex-direction: column;
   height: 100vh;
+
+  &__header {
+    max-width: 100%;
+  }
 
   &__center {
     flex: 1 1 auto;

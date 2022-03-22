@@ -39,6 +39,7 @@ export default {
 .footer {
   display: flex;
   justify-content: right;
+  width: 100%;
   height: 120px;
   background: url('../../assets/images/footer-image.jpg') 0 0 no-repeat;
 
