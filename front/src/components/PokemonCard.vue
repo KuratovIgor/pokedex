@@ -1,7 +1,11 @@
 <template>
   <div class="pokemon-card">
-    <router-link to="/detail">
-      <img class="pokemon-card__image" :src="image" />
+    <router-link to="/detail-page">
+      <img
+        class="pokemon-card__image"
+        :src="image"
+        @click="onSubmitToHistory"
+      />
     </router-link>
     <div class="pokemon-info">
       <p class="pokemon-info__number">{{ number }}</p>
@@ -16,7 +20,9 @@
 </template>
 
 <script lang="ts">
-export default {
+import { defineComponent } from 'vue'
+
+export default defineComponent({
   name: 'PokemonCard',
 
   props: {
@@ -25,7 +31,19 @@ export default {
     name: String,
     types: Array,
   },
-}
+
+  setup(props, { emit }) {
+    const onSubmitToHistory = (): void => {
+      emit('onSubmitToHistory', {
+        image: props.image,
+        name: props.name,
+        number: props.number,
+      })
+    }
+
+    return { onSubmitToHistory }
+  },
+})
 </script>
 
 <style lang="scss" scoped>
@@ -34,8 +52,8 @@ export default {
 
   &__image {
     border-radius: 10%;
-    width: 150px;
-    height: 150px;
+    width: 170px;
+    height: 170px;
     background: $card-color;
   }
 
@@ -55,6 +73,10 @@ export default {
       font-weight: 700;
     }
   }
+
+  &:hover {
+    animation: pokemon-hover 0.5s linear;
+  }
 }
 
 .pokemon-abilities {
@@ -66,6 +88,12 @@ export default {
     border-radius: 5px;
     width: 60px;
     text-align: center;
+  }
+}
+
+@keyframes pokemon-hover {
+  50% {
+    transform: translateY(-5px);
   }
 }
 </style>

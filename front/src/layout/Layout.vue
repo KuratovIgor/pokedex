@@ -1,8 +1,13 @@
 <template>
-  <div class="body">
-    <header-component class="body__header" />
-    <div class="body__center">
-      <router-view />
+  <div class="layout">
+    <header-component />
+    <div class="layout__content">
+      <div class="layout__content-sidebar">
+        <sidebar-history :key="$forceUpdate" />
+      </div>
+      <div class="layout__content-listing">
+        <router-view />
+      </div>
     </div>
     <footer-component />
   </div>
@@ -12,25 +17,33 @@
 import { defineComponent } from 'vue'
 import HeaderComponent from '@/components/layout/HeaderComponent.vue'
 import FooterComponent from '@/components/layout/FooterComponent.vue'
+import SidebarHistory from '@/components/SidebarHistory.vue'
 
 export default defineComponent({
   name: 'Layout',
-  components: { HeaderComponent, FooterComponent },
+  components: { SidebarHistory, HeaderComponent, FooterComponent },
 })
 </script>
 
 <style lang="scss" scoped>
-.body {
+.layout {
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
   height: 100vh;
 
-  &__header {
-    max-width: 100%;
+  &__content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
   }
 
-  &__center {
-    flex: 1 1 auto;
+  &__content-sidebar {
+    margin-left: 50px;
+  }
+
+  &__content-listing {
+    margin-right: 80px;
   }
 }
 </style>

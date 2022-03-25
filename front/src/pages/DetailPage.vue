@@ -2,9 +2,11 @@
   <h1>DETAIL PAGE OF POKEMON</h1>
 </template>
 <script>
-export default {
+import { defineComponent } from 'vue'
+
+export default defineComponent({
   name: 'DetailPage',
-}
+})
 </script>
 
 <style scoped>
