@@ -6,9 +6,11 @@
 </template>
 
 <script>
-export default {
+import { defineComponent } from 'vue'
+
+export default defineComponent({
   name: 'HeaderComponent',
-}
+})
 </script>
 
 <style lang="scss" scoped>
@@ -17,7 +19,7 @@ export default {
   justify-content: left;
   height: 110px;
   font-size: 30px;
-  background: url('../../assets/images/head-image.jpg') 0 0 no-repeat;
+  background: url('../../assets/images/head-image.png') 0 0 no-repeat;
 
   &__title {
     margin-top: 15px;

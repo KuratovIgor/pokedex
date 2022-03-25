@@ -30,18 +30,19 @@
 </template>
 
 <script>
-export default {
+import { defineComponent } from 'vue'
+
+export default defineComponent({
   name: 'FooterComponent',
-}
+})
 </script>
 
 <style lang="scss" scoped>
 .footer {
   display: flex;
   justify-content: right;
-  width: 100%;
   height: 120px;
-  background: url('../../assets/images/footer-image.jpg') 0 0 no-repeat;
+  background: url('../../assets/images/footer-image.png') 0 0 no-repeat;
 
   &__contacts {
     display: flex;
