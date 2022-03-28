@@ -4,8 +4,9 @@
       <pokemon-card
         class="pokemon-list__card"
         v-for="pokemon in pokemonFiltered"
+        :pokemon-count="1127"
         :image="pokemon.image"
-        :number="pokemon.number"
+        :id="pokemon.id"
         :name="pokemon.name"
         :types="pokemon.types"
         @on-submit-to-history="handleSubmitToHistory"
@@ -24,15 +25,15 @@
 
 <script lang="ts">
 import PokemonCard from '@/components/PokemonCard.vue'
-import { defineComponent, computed, ref } from 'vue'
-import { pokemonType } from '@/types/pokemonType'
+import { defineComponent, computed, ref, PropType } from 'vue'
+import { PokemonType } from '@/types/PokemonType'
 
 export default defineComponent({
   name: 'PokemonList',
   components: { PokemonCard },
 
   props: {
-    pokemonList: Array,
+    pokemonList: Array as PropType<PokemonType[]>,
   },
 
   setup(props, { emit }) {
@@ -40,7 +41,7 @@ export default defineComponent({
 
     const pokemonFiltered = computed(() => {
       return props.pokemonList.filter(
-        (item: pokemonType) => item.page === currentPage.value
+        (item: PokemonType) => item.page === currentPage.value
       )
     })
 
@@ -48,11 +49,11 @@ export default defineComponent({
       currentPage.value = val
     }
 
-    const handleSubmitToHistory = (item: pokemonType): void => {
+    const handleSubmitToHistory = (item: PokemonType): void => {
       emit('onSubmitToHistory', {
         image: item.image,
         name: item.name,
-        number: item.number,
+        id: item.id,
       })
     }
 

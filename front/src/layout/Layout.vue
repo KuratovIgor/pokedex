@@ -2,11 +2,11 @@
   <div class="layout">
     <header-component />
     <div class="layout__content">
-      <div class="layout__content-sidebar">
-        <sidebar-history :key="$forceUpdate" />
-      </div>
       <div class="layout__content-listing">
         <router-view />
+      </div>
+      <div class="layout__content-sidebar">
+        <sidebar-history :key="$forceUpdate" />
       </div>
     </div>
     <footer-component />
@@ -39,11 +39,12 @@ export default defineComponent({
   }
 
   &__content-sidebar {
-    margin-left: 50px;
+    margin-right: 50px;
+    height: 100%;
   }
 
   &__content-listing {
-    margin-right: 80px;
+    margin-right: 200px;
   }
 }
 </style>
