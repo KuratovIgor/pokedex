@@ -13,7 +13,7 @@ const PokemonListSchema = Type.Array(
     image: Type.String(),
     id: Type.Number(),
     name: Type.String(),
-    abilities: Type.Array(Type.String())
+    types: Type.Array(Type.String())
   })
 )
 
