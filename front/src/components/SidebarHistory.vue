@@ -5,8 +5,9 @@
       <pokemon-card
         class="history__pokemon"
         v-for="pokemon in pokemonListHistory"
+        :pokemon-count="1127"
         :image="pokemon.image"
-        :number="pokemon.number"
+        :id="pokemon.id"
         :name="pokemon.name"
       />
     </div>
@@ -16,16 +17,16 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
 import PokemonCard from '@/components/PokemonCard.vue'
-import { pokemonType } from '@/types/pokemonType'
+import { PokemonType } from '@/types/PokemonType'
 
 export default defineComponent({
   name: 'SidebarHistory',
   components: { PokemonCard },
 
   setup() {
-    let pokemonListHistory = ref<pokemonType[]>([])
+    let pokemonListHistory = ref<PokemonType[]>([])
 
-    const pokemonListFromLocalStorage: pokemonType[] = JSON.parse(
+    const pokemonListFromLocalStorage: PokemonType[] = JSON.parse(
       localStorage.getItem('pokemon-list')
     )
 

@@ -1,6 +1,6 @@
 <template>
   <div class="pokemon-card">
-    <router-link to="/detail-page">
+    <router-link :to="`/detail-page/${id}`">
       <img
         class="pokemon-card__image"
         :src="image"
@@ -8,7 +8,7 @@
       />
     </router-link>
     <div class="pokemon-info">
-      <p class="pokemon-info__number">{{ number }}</p>
+      <p class="pokemon-info__number">{{ idString }}</p>
       <h3 class="pokemon-info__name">{{ name }}</h3>
       <ul class="pokemon-abilities">
         <li v-for="type in types" class="pokemon-abilities__item">
@@ -20,16 +20,17 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, computed, PropType } from 'vue'
 
 export default defineComponent({
   name: 'PokemonCard',
 
   props: {
+    pokemonCount: Number,
     image: String,
-    number: String,
+    id: Number,
     name: String,
-    types: Array,
+    types: Array as PropType<string[]>,
   },
 
   setup(props, { emit }) {
@@ -37,11 +38,25 @@ export default defineComponent({
       emit('onSubmitToHistory', {
         image: props.image,
         name: props.name,
-        number: props.number,
+        id: props.id,
       })
     }
 
-    return { onSubmitToHistory }
+    const idString = computed(() => {
+      let idString: string = props.id.toString()
+      const idLength: number = idString.length
+      const totalLength: number = props.pokemonCount.toString().length
+
+      for (let i = 0; i < totalLength - idLength; i++) {
+        idString = '0' + idString
+      }
+
+      idString = '#' + idString
+
+      return idString
+    })
+
+    return { onSubmitToHistory, idString }
   },
 })
 </script>
