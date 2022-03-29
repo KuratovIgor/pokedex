@@ -1,22 +1,27 @@
 import { Static, Type } from '@sinclair/typebox'
 import { FastifyInstance } from 'fastify/types/instance'
-import { PokemonDetailMapper } from '../../mappers/pokemonDetailMapper'
+import { PokemonType, EvolutionType, PokemonDetailMapper } from '../../mappers/pokemonDetailMapper'
+import fastify from 'fastify'
+import { type } from 'os'
 
 const PokemonSchema = Type.Object({
   image: Type.String(),
   id: Type.Number(),
   name: Type.String(),
   types: Type.Array(Type.String()),
+  //weaknesses: Type.Array(Type.String()),
   height: Type.Number(),
   weight: Type.Number(),
+  gender: Type.String(),
+  //category: Type.String(),
   abilities: Type.Array(Type.String()),
   stats: Type.Array(Type.String()),
-  evolution: Type.Array(Type.Object({
+  evolution: Type.Array(Type.Array(Type.Object({
     name: Type.String(),
     id: Type.Number(),
     image: Type.String(),
-    types: Type.Array(Type.String())
-  }))
+    types: Type.Array(Type.String()),
+  })))
 })
 
 const ResponseSchema = Type.Object({
@@ -50,18 +55,85 @@ const pokemonRoute = (fastify: FastifyInstance) => {
           const pokemonSpecies = await fastify.axios.get(pokemonFromApi.data.species.url)
           const pokemonEvolution = await fastify.axios.get(pokemonSpecies.data.evolution_chain.url)
 
-          // eslint-disable-next-line max-len
-          const detailInfo = PokemonDetailMapper.mapDetailInfoToFrontend(pokemonFromApi.data, pokemonEvolution.data.chain)
+          const gender: string = await getPokemonGender(pokemonFromApi.data.name, fastify)
+          const evolutionChain: EvolutionType[] = await getEvolutionChain(pokemonEvolution.data.chain, fastify)
 
-         /* await repl.send({
+          const detailInfo: PokemonType = PokemonDetailMapper.mapDetailInfoToFrontend(pokemonFromApi.data, evolutionChain, gender)
+
+          await repl.send({
             pokemon: detailInfo
-          })*/
+          })
         }
       } catch (e) {
         fastify.log.error(e)
       }
     }
   )
+}
+
+
+async function getEvolutionChain(evolves_to, fastify): Promise<EvolutionType[]> {
+  let evolutionChain: EvolutionType[] = []
+
+  await getEvolveStage(evolves_to, 0)
+
+  async function getEvolveStage(evolves_to, stage) {
+    for(let item in evolves_to) {
+      if(typeof(evolves_to[item]) === 'object') {
+        if (item == 'evolves_to') {
+          await getEvolveStage(evolves_to[item], ++stage)
+        }
+        else {
+          await getEvolveStage(evolves_to[item], stage)
+        }
+      } else {
+        if (typeof(evolves_to[item]) == 'string' && evolves_to[item].includes('pokemon-species'))
+        {
+          const pokemonSpecies = await fastify.axios.get(evolves_to[item])
+          const id = pokemonSpecies.data.id
+          const pokemon = await fastify.axios.get(`https://pokeapi.co/api/v2/pokemon/${id}`)
+          const name = pokemon.data.name
+          const image = pokemon.data.sprites.other['official-artwork'].front_default
+          const types = pokemon.data.types.map((item) => item.type.name)
+
+          const evolution = {
+            id: id,
+            name: name,
+            image: image,
+            types: types,
+            stage: stage,
+          }
+
+          evolutionChain.push(evolution)
+        }
+      }
+    }
+  }
+
+  return evolutionChain
+}
+
+async function getPokemonGender(name: string, fastify): Promise<string> {
+  let result = ''
+
+  const femaleApi = await fastify.axios.get('https://pokeapi.co/api/v2/gender/1/')
+  const maleApi = await fastify.axios.get('https://pokeapi.co/api/v2/gender/2/')
+
+  const pokemonListFemale = femaleApi.data.pokemon_species_details
+  const pokemonListMale = maleApi.data.pokemon_species_details
+
+  const isPokemonFemale = pokemonListFemale.map(item => item.pokemon_species.name === name ? true : false)
+  const isPokemonMale = pokemonListMale.map(item => item.pokemon_species.name === name ? true : false)
+
+  if (isPokemonFemale.includes(true)){
+    result += '♀ '
+  }
+
+  if (isPokemonMale.includes(true)){
+    result += '♂ '
+  }
+
+  return result
 }
 
 export default pokemonRoute

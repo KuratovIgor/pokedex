@@ -1,57 +1,60 @@
 import fastify from 'fastify'
-import axios from "axios";
+import {Type} from "@sinclair/typebox";
 
 export type PokemonType = {
   image: string,
   id: number,
   name: string,
   types: string[],
+  //weaknesses: string[],
   height: number,
   weight: number,
+  gender: string,
   abilities: string[],
   stats: string[],
-  //evolution: object[],
+  evolution: any,
 }
 
-let evolutionChain: any[] = []
-
-async function getPokemonInfo(id) {
-  const pokemon = await axios.get(`https://pokeapi.co/api/v2/pokemon/${id}`)
-
-  console.log(pokemon)
-
-  return {
-    image: pokemon.data.image,
-    id: pokemon.data.id,
-    name: pokemon.data.name,
-    types: pokemon.data.types.map((item) => item.type.name),
-  }
+export type EvolutionType = {
+  name: string,
+  id: number,
+  image: string,
+  types: string[],
+  stage: number,
 }
 
-function getEvolution(evolves_to: any[]) {
-  if (evolves_to){
-    let pokemon
+function generateEvolutionStages(evolutionChain: EvolutionType[]): any[] {
+  let stages: any[] = []
+  let maxStage = 1
 
-    for (let i = 0; i < evolves_to.length; i++) {
-      pokemon = getPokemonInfo(evolves_to[i].species.url.id)
-      evolutionChain.push(pokemon)
-
-      if (evolves_to[i].evolves_to){
-        getEvolution(evolves_to[i].evolves_to)
-      }
+  for (let evolution of evolutionChain) {
+    if (evolution.stage > maxStage){
+      maxStage = evolution.stage
     }
   }
+
+  for (let i = 0; i < maxStage; i++){
+    stages.push([])
+  }
+
+  return stages
 }
 
+
 export class PokemonDetailMapper {
-  static mapDetailInfoToFrontend = (pokemon: any, pokemonEvolution: any): PokemonType => {
+  static mapDetailInfoToFrontend = (pokemon: any, evolutionChain: EvolutionType[], gender: string): PokemonType => {
+    let evolutionByStages = generateEvolutionStages(evolutionChain)
 
-    const pokemonInfo = getPokemonInfo(pokemonEvolution.species.url.id)
-    evolutionChain.push(pokemonInfo)
+    for (let evolution of evolutionChain){
+      const evolveItem = {
+        id: evolution.id,
+        name: evolution.name,
+        image: evolution.image,
+        types: evolution.types,
+      }
 
-    console.log(pokemonInfo)
-
-    getEvolution(pokemonEvolution.chain.evolves_to)
+      evolutionByStages[evolution.stage - 1].push(evolveItem)
+    }
 
     return {
       image: pokemon.sprites.other['official-artwork'].front_default,
@@ -60,9 +63,10 @@ export class PokemonDetailMapper {
       types: pokemon.types.map((item) => item.type.name),
       height: pokemon.height,
       weight: pokemon.weight,
+      gender: gender,
       abilities: pokemon.abilities.map((item) => item.ability.name),
-      stats: pokemon.stats.map((item) => item.stat.name)
-      //evolution:
+      stats: pokemon.stats.map((item) => item.stat.name),
+      evolution: evolutionByStages,
     }
   }
 }
