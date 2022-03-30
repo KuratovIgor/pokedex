@@ -87,24 +87,24 @@ const pokemonRoute = (fastify: FastifyInstance) => {
 }
 
 
-async function getEvolutionChain(evolves_to, fastify): Promise<EvolutionType[]> {
+async function getEvolutionChain(evolvesTo, fastify): Promise<EvolutionType[]> {
   let evolutionChain: EvolutionType[] = []
 
-  await getEvolveStage(evolves_to, 0)
+  await getEvolveStage(evolvesTo, 0)
 
-  async function getEvolveStage(evolves_to, stage) {
-    for(let item in evolves_to) {
-      if(typeof(evolves_to[item]) === 'object') {
+  async function getEvolveStage(evolvesTo, stage) {
+    for(let item in evolvesTo) {
+      if(typeof(evolvesTo[item]) === 'object') {
         if (item == 'evolves_to') {
-          await getEvolveStage(evolves_to[item], ++stage)
+          await getEvolveStage(evolvesTo[item], ++stage)
         }
         else {
-          await getEvolveStage(evolves_to[item], stage)
+          await getEvolveStage(evolvesTo[item], stage)
         }
       } else {
-        if (typeof(evolves_to[item]) == 'string' && evolves_to[item].includes('pokemon-species'))
+        if (typeof(evolvesTo[item]) == 'string' && evolvesTo[item].includes('pokemon-species'))
         {
-          const pokemonSpecies = await fastify.axios.get(evolves_to[item])
+          const pokemonSpecies = await fastify.axios.get(evolvesTo[item])
           const id = pokemonSpecies.data.id
           const pokemon = await fastify.axios.get(`https://pokeapi.co/api/v2/pokemon/${id}`)
           const name = pokemon.data.name
