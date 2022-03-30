@@ -43,17 +43,19 @@ export default defineComponent({
     }
 
     const idString = computed(() => {
-      let idString: string = props.id.toString()
-      const idLength: number = idString.length
-      const totalLength: number = props.pokemonCount.toString().length
+      if (typeof props.id !== 'undefined') {
+        let idString: string = props.id.toString()
+        const idLength: number = idString.length
+        const totalLength: number = props.pokemonCount.toString().length
 
-      for (let i = 0; i < totalLength - idLength; i++) {
-        idString = '0' + idString
+        for (let i = 0; i < totalLength - idLength; i++) {
+          idString = '0' + idString
+        }
+
+        idString = '#' + idString
+
+        return idString
       }
-
-      idString = '#' + idString
-
-      return idString
     })
 
     return { onSubmitToHistory, idString }
