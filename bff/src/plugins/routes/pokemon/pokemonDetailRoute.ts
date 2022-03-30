@@ -9,13 +9,19 @@ const PokemonSchema = Type.Object({
   id: Type.Number(),
   name: Type.String(),
   types: Type.Array(Type.String()),
-  //weaknesses: Type.Array(Type.String()),
   height: Type.Number(),
   weight: Type.Number(),
   gender: Type.String(),
-  //category: Type.String(),
+  category: Type.String(),
   abilities: Type.Array(Type.String()),
-  stats: Type.Array(Type.String()),
+  stats: Type.Object({
+    hp: Type.Number(),
+    attack: Type.Number(),
+    defence: Type.Number(),
+    special_attack: Type.Number(),
+    special_defence: Type.Number(),
+    speed: Type.Number(),
+  }),
   evolution: Type.Array(Type.Array(Type.Object({
     name: Type.String(),
     id: Type.Number(),
@@ -55,10 +61,17 @@ const pokemonRoute = (fastify: FastifyInstance) => {
           const pokemonSpecies = await fastify.axios.get(pokemonFromApi.data.species.url)
           const pokemonEvolution = await fastify.axios.get(pokemonSpecies.data.evolution_chain.url)
 
+          const genera = pokemonSpecies.data.genera
           const gender: string = await getPokemonGender(pokemonFromApi.data.name, fastify)
-          const evolutionChain: EvolutionType[] = await getEvolutionChain(pokemonEvolution.data.chain, fastify)
+          const evolutionChain: EvolutionType[] = await getEvolutionChain(
+            pokemonEvolution.data.chain,
+            fastify
+          )
 
-          const detailInfo: PokemonType = PokemonDetailMapper.mapDetailInfoToFrontend(pokemonFromApi.data, evolutionChain, gender)
+          const detailInfo: PokemonType = PokemonDetailMapper.mapDetailInfoToFrontend(
+            pokemonFromApi.data,
+            evolutionChain, gender, genera
+          )
 
           await repl.send({
             pokemon: detailInfo
@@ -122,8 +135,12 @@ async function getPokemonGender(name: string, fastify): Promise<string> {
   const pokemonListFemale = femaleApi.data.pokemon_species_details
   const pokemonListMale = maleApi.data.pokemon_species_details
 
-  const isPokemonFemale = pokemonListFemale.map(item => item.pokemon_species.name === name ? true : false)
-  const isPokemonMale = pokemonListMale.map(item => item.pokemon_species.name === name ? true : false)
+  const isPokemonFemale = pokemonListFemale.map(item => {
+    item.pokemon_species.name === name ? true : false
+  })
+  const isPokemonMale = pokemonListMale.map(item => {
+    item.pokemon_species.name === name ? true : false
+  })
 
   if (isPokemonFemale.includes(true)){
     result += '♀ '
