@@ -56,7 +56,7 @@ const pokemonRoute = (fastify: FastifyInstance) => {
     async (req, repl) => {
       try {
         const id = req.params.id
-        if (id) {
+        if (id)  {
           const pokemonFromApi = await fastify.axios.get(`https://pokeapi.co/api/v2/pokemon/${id}`)
           const pokemonSpecies = await fastify.axios.get(pokemonFromApi.data.species.url)
           const pokemonEvolution = await fastify.axios.get(pokemonSpecies.data.evolution_chain.url)
@@ -70,7 +70,9 @@ const pokemonRoute = (fastify: FastifyInstance) => {
 
           const detailInfo: PokemonType = PokemonDetailMapper.mapDetailInfoToFrontend(
             pokemonFromApi.data,
-            evolutionChain, gender, genera
+            evolutionChain,
+            gender,
+            genera
           )
 
           await repl.send({
@@ -135,18 +137,19 @@ async function getPokemonGender(name: string, fastify): Promise<string> {
   const pokemonListFemale = femaleApi.data.pokemon_species_details
   const pokemonListMale = maleApi.data.pokemon_species_details
 
-  const isPokemonFemale = pokemonListFemale.map(item => {
-    item.pokemon_species.name === name ? true : false
-  })
-  const isPokemonMale = pokemonListMale.map(item => {
-    item.pokemon_species.name === name ? true : false
-  })
+  const isPokemonFemale = () => {
+    return pokemonListFemale.filter(item => item.pokemon_species.name === name).length > 0
+  }
 
-  if (isPokemonFemale.includes(true)){
+  const isPokemonMale = () => {
+    return pokemonListMale.filter(item => item.pokemon_species.name === name).length > 0
+  }
+
+  if (isPokemonFemale()){
     result += '♀ '
   }
 
-  if (isPokemonMale.includes(true)){
+  if (isPokemonMale()){
     result += '♂ '
   }
 
