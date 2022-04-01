@@ -3,7 +3,7 @@
     <div class="pokemon-list__card-list">
       <pokemon-card
         class="pokemon-list__card"
-        v-for="pokemon in pokemonFiltered"
+        v-for="pokemon in pokemonList"
         :pokemon-count="1127"
         :image="pokemon.image"
         :id="pokemon.id"
@@ -17,7 +17,7 @@
       layout="prev, pager, next"
       :current-page="currentPage"
       :page-size="1"
-      :total="3"
+      :total="totalPages"
       @current-change="handleChangeCurrentPage"
     />
   </div>
@@ -25,7 +25,7 @@
 
 <script lang="ts">
 import PokemonCard from '@/components/PokemonCard.vue'
-import { defineComponent, computed, ref, PropType } from 'vue'
+import { defineComponent, ref, PropType } from 'vue'
 import { PokemonType } from '@/types/PokemonType'
 
 export default defineComponent({
@@ -34,19 +34,17 @@ export default defineComponent({
 
   props: {
     pokemonList: Array as PropType<PokemonType[]>,
+    totalPages: Number,
   },
 
   setup(props, { emit }) {
     const currentPage = ref<number>(1)
 
-    const pokemonFiltered = computed(() => {
-      return props.pokemonList.filter(
-        (item: PokemonType) => item.page === currentPage.value
-      )
-    })
-
     const handleChangeCurrentPage = (val: number): void => {
       currentPage.value = val
+      emit('onChangePage', {
+        offset: (currentPage.value - 1) * 10,
+      })
     }
 
     const handleSubmitToHistory = (item: PokemonType): void => {
@@ -58,7 +56,6 @@ export default defineComponent({
     }
 
     return {
-      pokemonFiltered,
       currentPage,
       handleChangeCurrentPage,
       handleSubmitToHistory,
@@ -73,6 +70,7 @@ export default defineComponent({
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  transition: 1s linear;
 
   &__card-list {
     display: flex;
