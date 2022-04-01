@@ -1,5 +1,4 @@
 export type PokemonType = {
-  page: number
   image: string
   name: string
   id: number
@@ -28,4 +27,8 @@ export type StatType = {
   specialAttack: number
   specialDefence: number
   speed: number
+}
+
+export type PaginationType = {
+  offset: number
 }
