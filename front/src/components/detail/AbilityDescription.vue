@@ -2,7 +2,9 @@
   <div class="ability-description">
     <div class="ability-description__header">
       <div class="ability-description__title">ability info</div>
-      <div class="ability-description__close">× Close</div>
+      <button class="ability-description__close" @click.stop="onClose">
+        × Close
+      </button>
     </div>
     <div class="ability-description__description">
       <div class="ability-description__name">{{ pokemonAbility.name }}</div>
@@ -24,7 +26,7 @@ export default defineComponent({
     name: String,
   },
 
-  setup(props) {
+  setup(props, { emit }) {
     let pokemonAbility = ref<AbilityType>()
 
     const getAbilityInfo = async (abilityName: string) => {
@@ -34,8 +36,15 @@ export default defineComponent({
 
     getAbilityInfo(props.name)
 
+    const onClose = (): void => {
+      emit('onClose', {
+        value: false,
+      })
+    }
+
     return {
       pokemonAbility,
+      onClose,
     }
   },
 })

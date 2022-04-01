@@ -1,5 +1,10 @@
 <template>
-  <div class="detail-page">
+  <div
+    class="detail-page"
+    v-loading="loading"
+    element-loading-text="Loading..."
+    element-loading-background="rgba(0, 0, 0, 0.6)"
+  >
     <div class="detail-page__title">
       <div class="detail-page__title__name">{{ pokemonDetail.name }}</div>
       <div class="detail-page__title__number">{{ idString }}</div>
@@ -10,6 +15,7 @@
           <img :src="pokemonDetail.image" />
         </div>
         <pokemon-description
+          v-if="Object.keys(pokemonDetail).length"
           class="pokemon-info__description"
           :pokemon="pokemonDetail"
         />
@@ -33,14 +39,19 @@ export default defineComponent({
   components: { PokemonEvolution, PokemonDescription, PokemonStats },
 
   setup() {
+    const loading = ref(false)
+
     const store = useStore()
     const route = useRoute()
 
     let pokemonDetail = ref()
 
     const getPokemonDetail = async (id) => {
+      loading.value = true
+
       const [error, data] = await pokemonAPI.getPokemonDelail(id)
       pokemonDetail.value = data.pokemon
+      loading.value = false
     }
 
     getPokemonDetail(route.params.id)
@@ -51,6 +62,7 @@ export default defineComponent({
     })
 
     return {
+      loading,
       pokemonDetail,
       idString,
     }

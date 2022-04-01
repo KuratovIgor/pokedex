@@ -1,6 +1,15 @@
 <template>
-  <div class="pokemon-description">
-    <div class="pokemon-description__about-pokemon about-pokemon">
+  <div class="pokemon-description" :key="$forceUpdate">
+    <ability-description
+      v-show="isAbilityDescriptionOpened"
+      class="pokemon-description__about-pokemon"
+      :name="abilityName"
+      @on-close="closeDescription"
+    />
+    <div
+      v-show="isAbilityDescriptionOpened === false"
+      class="pokemon-description__about-pokemon about-pokemon"
+    >
       <div class="about-pokemon__left-column">
         <div class="about-pokemon__item">
           <div class="about-pokemon__item-title">Height</div>
@@ -32,7 +41,7 @@
                 width="15"
                 height="15"
                 name="question-sign"
-                @click="openAbilityDescription"
+                @click="openAbilityDescription(ability)"
               />
             </div>
           </div>
@@ -54,25 +63,45 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, ref } from 'vue'
+import { defineAsyncComponent, defineComponent, PropType, ref } from 'vue'
 import { PokemonDetailType } from '@/types/PokemonType'
-import AbilityDescription from '@/components/detail/AbilityDescription.vue'
+
+const AbilityDescription = defineAsyncComponent(
+  () => import('./AbilityDescription.vue')
+)
 
 export default defineComponent({
   name: 'PokemonDescription',
   components: { AbilityDescription },
+
   props: {
     pokemon: Object as PropType<PokemonDetailType>,
+  },
+
+  setup() {
+    let abilityName = ref<string>()
+    let isAbilityDescriptionOpened = ref<boolean>()
+
+    const openAbilityDescription = (ability: string): void => {
+      abilityName.value = ability
+      isAbilityDescriptionOpened.value = true
+    }
+
+    const closeDescription = (item): void => {
+      isAbilityDescriptionOpened.value = item.value
+    }
+
+    return {
+      abilityName,
+      isAbilityDescriptionOpened,
+      closeDescription,
+      openAbilityDescription,
+    }
   },
 })
 </script>
 
 <style lang="scss" scoped>
-.sas {
-  width: 400px;
-  height: 200px;
-}
-
 .pokemon-description {
   &__about-pokemon {
     margin-bottom: 20px;
