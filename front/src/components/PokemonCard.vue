@@ -20,7 +20,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, PropType } from 'vue'
+import { defineComponent, computed, PropType, ref } from 'vue'
+import { useStore } from 'vuex'
 
 export default defineComponent({
   name: 'PokemonCard',
@@ -34,6 +35,8 @@ export default defineComponent({
   },
 
   setup(props, { emit }) {
+    const store = useStore()
+
     const onSubmitToHistory = (): void => {
       emit('onSubmitToHistory', {
         image: props.image,
@@ -43,22 +46,14 @@ export default defineComponent({
     }
 
     const idString = computed(() => {
-      if (typeof props.id !== 'undefined') {
-        let idString: string = props.id.toString()
-        const idLength: number = idString.length
-        const totalLength: number = props.pokemonCount.toString().length
-
-        for (let i = 0; i < totalLength - idLength; i++) {
-          idString = '0' + idString
-        }
-
-        idString = '#' + idString
-
-        return idString
-      }
+      store.commit('idToString', props.id)
+      return store.getters.getIdString
     })
 
-    return { onSubmitToHistory, idString }
+    return {
+      onSubmitToHistory,
+      idString,
+    }
   },
 })
 </script>

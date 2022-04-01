@@ -1,15 +1,13 @@
 <template>
   <div class="detail-page">
     <div class="detail-page__title">
-      <div class="detail-page__title__name">Bulbasaur</div>
-      <div class="detail-page__title__number">#001</div>
+      <div class="detail-page__title__name">{{ pokemonDetail.name }}</div>
+      <div class="detail-page__title__number">{{ idString }}</div>
     </div>
     <div class="pokemon-info">
       <div class="pokemon-info__detail">
         <div class="pokemon-info__image">
-          <img
-            src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png"
-          />
+          <img :src="pokemonDetail.image" />
         </div>
         <pokemon-description
           class="pokemon-info__description"
@@ -18,70 +16,44 @@
       </div>
       <pokemon-stats class="pokemon-info__stats" :stat="pokemonDetail.stats" />
     </div>
-    <pokemon-evolution />
+    <pokemon-evolution :evolution="pokemonDetail.evolution" />
   </div>
 </template>
-<script>
-import PokemonDescription from '@/components/detail/PokemonDescription'
-import PokemonStats from '@/components/detail/PokemonStats'
-import PokemonEvolution from '@/components/detail/PokemonEvolution'
-import { defineComponent, ref } from 'vue'
+<script lang="ts">
+import PokemonDescription from '@/components/detail/PokemonDescription.vue'
+import PokemonStats from '@/components/detail/PokemonStats.vue'
+import PokemonEvolution from '@/components/detail/PokemonEvolution.vue'
+import { defineComponent, ref, computed } from 'vue'
+import { pokemonAPI } from '@/api/pokemon.api'
+import { useRoute } from 'vue-router'
+import { useStore } from 'vuex'
 
 export default defineComponent({
   name: 'DetailPage',
   components: { PokemonEvolution, PokemonDescription, PokemonStats },
 
-  props: {
-    id: Number,
-  },
-
   setup() {
-    let pokemonDetail = ref({
-      image:
-        'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png',
-      number: 'N001',
-      name: 'pokemon name',
-      types: ['water', 'fire'],
-      weaknesses: ['water', 'fire'],
-      height: '0.5 m',
-      weight: '5.5 kg',
-      gender: '♂ ♀',
-      category: 'Balloon',
-      abilities: ['water', 'fire'],
-      stats: {
-        hp: 2,
-        attack: 5,
-        defence: 3,
-        specialAttack: 6,
-        specialDefence: 5,
-        speed: 10,
-      },
-      evolution: [
-        {
-          image:
-            'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png',
-          number: 'N001',
-          name: 'pokemon name',
-          types: ['water', 'fire'],
-        },
-        {
-          image:
-            'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png',
-          number: 'N001',
-          name: 'pokemon name',
-          types: ['water', 'fire'],
-        },
-        {
-          image:
-            'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png',
-          number: 'N001',
-          name: 'pokemon name',
-          types: ['water', 'fire'],
-        },
-      ],
+    const store = useStore()
+    const route = useRoute()
+
+    let pokemonDetail = ref()
+
+    const getPokemonDetail = async (id) => {
+      const [error, data] = await pokemonAPI.getPokemonDelail(id)
+      pokemonDetail.value = data.pokemon
+    }
+
+    getPokemonDetail(route.params.id)
+
+    const idString = computed(() => {
+      store.commit('idToString', pokemonDetail.value.id)
+      return store.getters.getIdString
     })
 
-    return { pokemonDetail }
+    return {
+      pokemonDetail,
+      idString,
+    }
   },
 })
 </script>

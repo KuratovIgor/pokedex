@@ -28,7 +28,12 @@
           >
             <div class="about-pokemon__item-value">{{ ability }}</div>
             <div class="about-pokemon__item-icon">
-              <icon-template width="15" height="15" name="question-sign" />
+              <icon-template
+                width="15"
+                height="15"
+                name="question-sign"
+                @click="openAbilityDescription"
+              />
             </div>
           </div>
         </div>
@@ -45,27 +50,17 @@
         </li>
       </ul>
     </div>
-    <div class="pokemon-description__weaknesses">
-      <div class="pokemon-description__weaknesses-title">Weaknesses</div>
-      <ul class="pokemon-description__weaknesses-items">
-        <li
-          class="pokemon-description__weaknesses-item"
-          v-for="weakness in pokemon.weaknesses"
-        >
-          {{ weakness }}
-        </li>
-      </ul>
-    </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from 'vue'
+import { defineComponent, PropType, ref } from 'vue'
 import { PokemonDetailType } from '@/types/PokemonType'
+import AbilityDescription from '@/components/detail/AbilityDescription.vue'
 
 export default defineComponent({
   name: 'PokemonDescription',
-
+  components: { AbilityDescription },
   props: {
     pokemon: Object as PropType<PokemonDetailType>,
   },
@@ -73,41 +68,21 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+.sas {
+  width: 400px;
+  height: 200px;
+}
+
 .pokemon-description {
   &__about-pokemon {
     margin-bottom: 20px;
     border: 1px solid #000;
     border-radius: 10px;
-    width: 400px;
-    height: 200px;
     background-color: #30a7d7;
   }
 
   &__type {
     margin-bottom: 10px;
-    width: 400px;
-    height: 70px;
-    font-size: 20px;
-
-    &-title {
-      margin-bottom: 10px;
-    }
-
-    &-items {
-      display: flex;
-    }
-
-    &-item {
-      margin-right: 10px;
-      border: 1px solid #000;
-      border-radius: 5px;
-      width: 100px;
-      height: 30px;
-      text-align: center;
-    }
-  }
-
-  &__weaknesses {
     width: 400px;
     height: 70px;
     font-size: 20px;

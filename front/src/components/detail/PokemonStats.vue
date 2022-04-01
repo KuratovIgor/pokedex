@@ -36,11 +36,11 @@
         <ul>
           <li
             class="pokemon-stats__row"
-            v-for="emptyRow in statRows - stat.specialAttack"
+            v-for="emptyRow in statRows - stat.special_attack"
           />
           <li
             class="pokemon-stats__row-fill"
-            v-for="fillRow in stat.specialAttack"
+            v-for="fillRow in stat.special_attack"
           />
           <li class="pokemon-stats__row-name">Special Attack</li>
         </ul>
@@ -49,11 +49,11 @@
         <ul>
           <li
             class="pokemon-stats__row"
-            v-for="emptyRow in statRows - stat.specialDefence"
+            v-for="emptyRow in statRows - stat.special_defence"
           />
           <li
             class="pokemon-stats__row-fill"
-            v-for="fillRow in stat.specialDefence"
+            v-for="fillRow in stat.special_defence"
           />
           <li class="pokemon-stats__row-name">Special Defense</li>
         </ul>
