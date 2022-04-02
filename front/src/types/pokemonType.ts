@@ -7,7 +7,7 @@ export type PokemonType = {
 
 export type PokemonDetailType = {
   image: string
-  number: string
+  id: number
   name: string
   types: string[]
   weaknesses: string[]

@@ -39,9 +39,9 @@ export default defineComponent({
   },
 
   setup(props, { emit }) {
-    const store = useStore()
+    const currentPage = ref(1)
 
-    const currentPage = ref<number>(1)
+    const store = useStore()
 
     const handleChangeCurrentPage = (val: number): void => {
       currentPage.value = val

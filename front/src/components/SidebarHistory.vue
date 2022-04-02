@@ -18,28 +18,24 @@
 import { defineComponent, ref } from 'vue'
 import PokemonCard from '@/components/PokemonCard.vue'
 import { PokemonType } from '@/types/PokemonType'
+import { useStore } from 'vuex'
 
 export default defineComponent({
   name: 'SidebarHistory',
   components: { PokemonCard },
 
   setup() {
-    let pokemonListHistory = ref<PokemonType[]>([])
+    let pokemonListHistory = ref<PokemonType[]>()
 
-    const pokemonListFromLocalStorage: PokemonType[] = JSON.parse(
-      localStorage.getItem('pokemon-list')
-    )
+    const store = useStore()
 
-    if (
-      typeof pokemonListFromLocalStorage !== 'undefined' &&
-      pokemonListFromLocalStorage !== null
-    ) {
-      for (let pokemon of pokemonListFromLocalStorage) {
-        pokemonListHistory.value.push(pokemon)
-      }
+    store.commit('getHostoryFromLocalStorage')
+
+    pokemonListHistory = store.getters.getHistory
+
+    return {
+      pokemonListHistory,
     }
-
-    return { pokemonListHistory }
   },
 })
 </script>
@@ -49,8 +45,6 @@ export default defineComponent({
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 500px;
-  height: 650px;
 
   &__title {
     margin-bottom: 10px;
@@ -66,8 +60,22 @@ export default defineComponent({
     justify-content: center;
     overflow: scroll;
     overflow-x: hidden;
-    border: 1px solid #000;
-    border-radius: 10px;
+    border: 2px solid #000;
+    border-radius: 15px;
+    width: 500px;
+    height: 615px;
+
+    &::-webkit-scrollbar {
+      border-radius: 20px;
+      width: 15px;
+      opacity: 100%;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      border: 1px solid #000;
+      border-radius: 20px;
+      background: #30a7d7;
+    }
   }
 
   &__pokemon {

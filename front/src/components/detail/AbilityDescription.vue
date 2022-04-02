@@ -1,5 +1,12 @@
 <template>
-  <div class="ability-description">
+  <div
+    v-if="!pokemonAbility"
+    class="ability-description"
+    v-loading="loading"
+    element-loading-text="Loading..."
+    element-loading-background="rgba(0, 0, 0, 0.2)"
+  ></div>
+  <div v-if="pokemonAbility" class="ability-description">
     <div class="ability-description__header">
       <div class="ability-description__title">ability info</div>
       <button class="ability-description__close" @click.stop="onClose">
@@ -27,22 +34,27 @@ export default defineComponent({
   },
 
   setup(props, { emit }) {
+    const loading = ref(true)
+
     let pokemonAbility = ref<AbilityType>()
 
     const getAbilityInfo = async (abilityName: string) => {
+      loading.value = true
+
       const [error, data] = await pokemonAPI.getAbilityInfo(abilityName)
       pokemonAbility.value = data.ability
+
+      loading.value = false
+    }
+
+    const onClose = (): void => {
+      emit('onCloseClick')
     }
 
     getAbilityInfo(props.name)
 
-    const onClose = (): void => {
-      emit('onClose', {
-        value: false,
-      })
-    }
-
     return {
+      loading,
       pokemonAbility,
       onClose,
     }
@@ -55,8 +67,8 @@ export default defineComponent({
   margin-bottom: 20px;
   border: 1px solid #000;
   border-radius: 10px;
-  width: 400px;
-  height: 200px;
+  width: 500px;
+  height: 215px;
   background-color: #313131;
 
   &__header {
@@ -67,7 +79,7 @@ export default defineComponent({
   }
 
   &__description {
-    margin-left: 10px;
+    margin: 0 10px;
   }
 
   &__title {
@@ -96,6 +108,7 @@ export default defineComponent({
 
   &__text {
     font-size: 15px;
+    letter-spacing: 1px;
     color: #fff;
   }
 }

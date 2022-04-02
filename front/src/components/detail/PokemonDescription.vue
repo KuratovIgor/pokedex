@@ -1,13 +1,13 @@
 <template>
-  <div class="pokemon-description" :key="$forceUpdate">
+  <div class="pokemon-description">
     <ability-description
-      v-show="isAbilityDescriptionOpened"
+      v-if="isAbilityOpen"
       class="pokemon-description__about-pokemon"
       :name="abilityName"
-      @on-close="closeDescription"
+      @on-close-click="closeDescription"
     />
     <div
-      v-show="isAbilityDescriptionOpened === false"
+      v-if="!isAbilityOpen"
       class="pokemon-description__about-pokemon about-pokemon"
     >
       <div class="about-pokemon__left-column">
@@ -32,8 +32,8 @@
         <div class="about-pokemon__item">
           <div class="about-pokemon__item-title">Abilities</div>
           <div
-            class="about-pokemon__item-abilities"
             v-for="ability in pokemon.abilities"
+            class="about-pokemon__item-abilities"
           >
             <div class="about-pokemon__item-value">{{ ability }}</div>
             <div class="about-pokemon__item-icon">
@@ -52,8 +52,9 @@
       <div class="pokemon-description__type-title">Type</div>
       <ul class="pokemon-description__type-items">
         <li
-          class="pokemon-description__type-item"
           v-for="type in pokemon.types"
+          class="pokemon-description__type-item"
+          :class="`${type}-type`"
         >
           {{ type }}
         </li>
@@ -80,20 +81,20 @@ export default defineComponent({
 
   setup() {
     let abilityName = ref<string>()
-    let isAbilityDescriptionOpened = ref<boolean>()
+    let isAbilityOpen = ref(false)
 
     const openAbilityDescription = (ability: string): void => {
       abilityName.value = ability
-      isAbilityDescriptionOpened.value = true
+      isAbilityOpen.value = true
     }
 
-    const closeDescription = (item): void => {
-      isAbilityDescriptionOpened.value = item.value
+    const closeDescription = (): void => {
+      isAbilityOpen.value = false
     }
 
     return {
       abilityName,
-      isAbilityDescriptionOpened,
+      isAbilityOpen,
       closeDescription,
       openAbilityDescription,
     }
@@ -103,6 +104,8 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .pokemon-description {
+  width: 500px;
+
   &__about-pokemon {
     margin-bottom: 20px;
     border: 1px solid #000;
@@ -112,7 +115,7 @@ export default defineComponent({
 
   &__type {
     margin-bottom: 10px;
-    width: 400px;
+    width: 500px;
     height: 70px;
     font-size: 20px;
 
@@ -125,12 +128,14 @@ export default defineComponent({
     }
 
     &-item {
-      margin-right: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 5px 5px 0;
       border: 1px solid #000;
       border-radius: 5px;
       width: 100px;
       height: 30px;
-      text-align: center;
     }
   }
 }
@@ -161,6 +166,15 @@ export default defineComponent({
       align-items: flex-end;
       justify-content: space-between;
       margin-bottom: 5px;
+    }
+
+    &-icon {
+      margin-left: 10px;
+
+      &:hover {
+        transform: scale(1.2);
+        transition: 0.1s linear;
+      }
     }
   }
 }

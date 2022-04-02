@@ -5,24 +5,28 @@
     element-loading-text="Loading..."
     element-loading-background="rgba(0, 0, 0, 0.6)"
   >
-    <div class="detail-page__title">
-      <div class="detail-page__title__name">{{ pokemonDetail.name }}</div>
-      <div class="detail-page__title__number">{{ idString }}</div>
-    </div>
-    <div class="pokemon-info">
-      <div class="pokemon-info__detail">
-        <div class="pokemon-info__image">
-          <img :src="pokemonDetail.image" />
+    <template v-if="pokemonDetail">
+      <div class="detail-page__title">
+        <div class="detail-page__title__name">{{ pokemonDetail.name }}</div>
+        <div class="detail-page__title__number">{{ idString }}</div>
+      </div>
+      <div class="pokemon-info">
+        <div class="pokemon-info__detail">
+          <div class="pokemon-info__image">
+            <img :src="pokemonDetail.image" />
+          </div>
+          <pokemon-description
+            class="pokemon-info__description"
+            :pokemon="pokemonDetail"
+          />
         </div>
-        <pokemon-description
-          v-if="Object.keys(pokemonDetail).length"
-          class="pokemon-info__description"
-          :pokemon="pokemonDetail"
+        <pokemon-stats
+          class="pokemon-info__stats"
+          :stat="pokemonDetail.stats"
         />
       </div>
-      <pokemon-stats class="pokemon-info__stats" :stat="pokemonDetail.stats" />
-    </div>
-    <pokemon-evolution :evolution="pokemonDetail.evolution" />
+      <pokemon-evolution :evolution="pokemonDetail.evolution" />
+    </template>
   </div>
 </template>
 <script lang="ts">
@@ -33,6 +37,7 @@ import { defineComponent, ref, computed } from 'vue'
 import { pokemonAPI } from '@/api/pokemon.api'
 import { useRoute } from 'vue-router'
 import { useStore } from 'vuex'
+import { PokemonDetailType } from '@/types/pokemonType'
 
 export default defineComponent({
   name: 'DetailPage',
@@ -40,13 +45,17 @@ export default defineComponent({
 
   setup() {
     const loading = ref(false)
+    let pokemonDetail = ref<PokemonDetailType>()
 
     const store = useStore()
     const route = useRoute()
 
-    let pokemonDetail = ref()
+    const idString = computed((): string => {
+      store.commit('idToString', pokemonDetail.value.id)
+      return store.getters.getIdString
+    })
 
-    const getPokemonDetail = async (id) => {
+    const getPokemonDetail = async (id): Promise<void> => {
       loading.value = true
 
       const [error, data] = await pokemonAPI.getPokemonDelail(id)
@@ -55,11 +64,6 @@ export default defineComponent({
     }
 
     getPokemonDetail(route.params.id)
-
-    const idString = computed(() => {
-      store.commit('idToString', pokemonDetail.value.id)
-      return store.getters.getIdString
-    })
 
     return {
       loading,
@@ -75,6 +79,7 @@ export default defineComponent({
   display: flex;
   flex-direction: column;
   margin-left: 50px;
+  min-width: 1000px;
 
   &__title {
     display: flex;
@@ -104,6 +109,8 @@ export default defineComponent({
 
   &__image {
     img {
+      border: 1px solid #000;
+      border-radius: 15px;
       width: 450px;
       height: 450px;
       background-color: #f2f2f2;

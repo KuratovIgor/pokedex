@@ -2,16 +2,25 @@
   <div class="pokemon-evolution">
     <div class="pokemon-evolution__title">Стадии Эволюции</div>
     <div class="pokemon-evolution__stages">
-      <div class="pokemon-evolution__stage" v-for="stage in evolution">
-        <div class="pokemon-evolution__stage-item" v-for="pokemon in stage">
-          <img :src="pokemon.image" />
+      <div v-for="stage in evolution" class="pokemon-evolution__stage">
+        <div v-for="pokemon in stage" class="pokemon-evolution__stage-item">
+          <router-link :to="`/detail-page/${pokemon.id}`">
+            <img
+              :src="pokemon.image"
+              @click="submitPokemonToHistory(pokemon)"
+            />
+          </router-link>
           <div class="pokemon-evolution__pokemon-info pokemon-info">
             <div class="pokemon-info__title">
               <div class="pokemon-info__name">{{ pokemon.name }}</div>
               <div class="pokemon-info__id">{{ getIdString(pokemon.id) }}</div>
             </div>
             <ul class="pokemon-info__types">
-              <li class="pokemon-info__type" v-for="type in pokemon.types">
+              <li
+                v-for="type in pokemon.types"
+                class="pokemon-info__type"
+                :class="`${type}-type`"
+              >
                 {{ type }}
               </li>
             </ul>
@@ -27,8 +36,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from 'vue'
+import { defineComponent } from 'vue'
 import { useStore } from 'vuex'
+import { useRoute } from 'vue-router'
+import { PokemonType } from '@/types/pokemonType'
 
 export default defineComponent({
   name: 'PokemonEvolution',
@@ -39,13 +50,23 @@ export default defineComponent({
 
   setup() {
     const store = useStore()
+    const route = useRoute()
 
-    const getIdString = (id) => {
+    const getIdString = (id: string): void => {
       store.commit('idToString', id)
       return store.getters.getIdString
     }
 
-    return { getIdString }
+    const submitPokemonToHistory = (pokemon: PokemonType): void => {
+      if (pokemon.id !== Number(route.params.id)) {
+        store.commit('submitPokemonToHistory', pokemon)
+      }
+    }
+
+    return {
+      getIdString,
+      submitPokemonToHistory,
+    }
   },
 })
 </script>
@@ -53,8 +74,8 @@ export default defineComponent({
 <style lang="scss" scoped>
 .pokemon-evolution {
   border: 1px solid #000;
-  border-radius: 5px 5px 5px 50px;
-  width: 900px;
+  border-radius: 10px 10px 10px 50px;
+  width: 1000px;
   min-height: 230px;
   background-color: #616161;
 
@@ -64,6 +85,12 @@ export default defineComponent({
     width: 120px;
     height: 120px;
     box-shadow: 5px 5px 10px #000;
+
+    &:hover {
+      box-shadow: 5px 5px 20px #000;
+      transform: scale(1.05);
+      transition: 0.1s linear;
+    }
   }
 
   &__title {
@@ -133,12 +160,14 @@ export default defineComponent({
   }
 
   &__type {
-    margin-right: 5px;
-    border: 1px solid #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 5px 5px 0;
+    border: 1px solid #000;
     border-radius: 5px;
     width: 70px;
-    text-align: center;
-    background-color: #f2f2f2;
+    height: 25px;
   }
 }
 </style>
