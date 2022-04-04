@@ -1,28 +1,31 @@
 <template>
   <div
-    v-if="!pokemonAbility"
     class="ability-description"
     v-loading="loading"
     element-loading-text="Loading..."
     element-loading-background="rgba(0, 0, 0, 0.2)"
-  ></div>
-  <div v-if="pokemonAbility" class="ability-description">
-    <div class="ability-description__header">
-      <div class="ability-description__title">ability info</div>
-      <button class="ability-description__close" @click.stop="onClose">
-        × Close
-      </button>
-    </div>
-    <div class="ability-description__description">
-      <div class="ability-description__name">{{ pokemonAbility.name }}</div>
-      <div class="ability-description__text">
-        {{ pokemonAbility.description }}
+  >
+    <template v-if="pokemonAbility">
+      <div class="ability-description__header">
+        <div class="ability-description__title">ability info</div>
+        <button
+          class="ability-description__close"
+          @click.stop="handleCloseDescription"
+        >
+          × Close
+        </button>
       </div>
-    </div>
+      <div class="ability-description__content">
+        <div class="ability-description__name">{{ pokemonAbility.name }}</div>
+        <div class="ability-description__text">
+          {{ pokemonAbility.description }}
+        </div>
+      </div>
+    </template>
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, ref } from 'vue'
+import { defineComponent, onMounted, ref } from 'vue'
 import { pokemonAPI } from '@/api/pokemon.api'
 import { AbilityType } from '@/types/PokemonType'
 
@@ -38,7 +41,7 @@ export default defineComponent({
 
     let pokemonAbility = ref<AbilityType>()
 
-    const getAbilityInfo = async (abilityName: string) => {
+    const getAbilityInfo = async (abilityName: string): Promise<void> => {
       loading.value = true
 
       const [error, data] = await pokemonAPI.getAbilityInfo(abilityName)
@@ -47,16 +50,18 @@ export default defineComponent({
       loading.value = false
     }
 
-    const onClose = (): void => {
+    const handleCloseDescription = (): void => {
       emit('onCloseClick')
     }
 
-    getAbilityInfo(props.name)
+    onMounted(() => {
+      getAbilityInfo(props.name)
+    })
 
     return {
       loading,
       pokemonAbility,
-      onClose,
+      handleCloseDescription,
     }
   },
 })
@@ -65,7 +70,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 .ability-description {
   margin-bottom: 20px;
-  border: 1px solid #000;
+  border: 1px solid $color-black;
   border-radius: 10px;
   width: 500px;
   height: 215px;
@@ -78,7 +83,7 @@ export default defineComponent({
     height: 40px;
   }
 
-  &__description {
+  &__content {
     margin: 0 10px;
   }
 
@@ -96,20 +101,20 @@ export default defineComponent({
     width: 80px;
     height: 100%;
     font-size: 17px;
-    color: #fff;
-    background: #000;
+    color: $color-white;
+    background: $color-black;
   }
 
   &__name {
     margin-bottom: 10px;
     font-size: 30px;
-    color: #fff;
+    color: $color-white;
   }
 
   &__text {
     font-size: 15px;
     letter-spacing: 1px;
-    color: #fff;
+    color: $color-white;
   }
 }
 </style>

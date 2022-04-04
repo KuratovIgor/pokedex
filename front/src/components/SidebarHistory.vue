@@ -18,20 +18,14 @@
 import { defineComponent, ref } from 'vue'
 import PokemonCard from '@/components/PokemonCard.vue'
 import { PokemonType } from '@/types/PokemonType'
-import { useStore } from 'vuex'
+import { getHistoryFromLocalStorage } from '@/utils'
 
 export default defineComponent({
   name: 'SidebarHistory',
   components: { PokemonCard },
 
   setup() {
-    let pokemonListHistory = ref<PokemonType[]>()
-
-    const store = useStore()
-
-    store.commit('getHostoryFromLocalStorage')
-
-    pokemonListHistory = store.getters.getHistory
+    let pokemonListHistory = ref<PokemonType[]>(getHistoryFromLocalStorage())
 
     return {
       pokemonListHistory,
@@ -60,7 +54,7 @@ export default defineComponent({
     justify-content: center;
     overflow: scroll;
     overflow-x: hidden;
-    border: 2px solid #000;
+    border: 2px solid $color-black;
     border-radius: 15px;
     width: 500px;
     height: 615px;
@@ -72,9 +66,9 @@ export default defineComponent({
     }
 
     &::-webkit-scrollbar-thumb {
-      border: 1px solid #000;
+      border: 1px solid $color-black;
       border-radius: 20px;
-      background: #30a7d7;
+      background: $color-blue;
     }
   }
 

@@ -4,7 +4,6 @@
       <pokemon-card
         class="pokemon-list__card"
         v-for="pokemon in pokemonList"
-        :pokemon-count="store.state.pokemonCount"
         :image="pokemon.image"
         :id="pokemon.id"
         :name="pokemon.name"
@@ -27,7 +26,6 @@
 import PokemonCard from '@/components/PokemonCard.vue'
 import { defineComponent, ref, PropType } from 'vue'
 import { PokemonType } from '@/types/PokemonType'
-import { useStore } from 'vuex'
 
 export default defineComponent({
   name: 'PokemonList',
@@ -40,8 +38,6 @@ export default defineComponent({
 
   setup(props, { emit }) {
     const currentPage = ref(1)
-
-    const store = useStore()
 
     const handleChangeCurrentPage = (val: number): void => {
       currentPage.value = val
@@ -59,7 +55,6 @@ export default defineComponent({
     }
 
     return {
-      store,
       currentPage,
       handleChangeCurrentPage,
       handleSubmitToHistory,

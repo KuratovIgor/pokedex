@@ -93,7 +93,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .pokemon-stats {
-  border: 1px solid #000;
+  border: 1px solid $color-black;
   border-radius: 10px;
   width: 450px;
   height: 270px;
@@ -117,17 +117,17 @@ export default defineComponent({
 
   &__row {
     margin-bottom: 3px;
-    border: 1px solid #000;
+    border: 1px solid $color-black;
     width: 60px;
     height: 10px;
-    background-color: #fff;
+    background-color: $color-white;
 
     &-fill {
       margin-bottom: 3px;
-      border: 1px solid #000;
+      border: 1px solid $color-black;
       width: 60px;
       height: 10px;
-      background-color: #30a7d7;
+      background-color: $color-blue;
     }
 
     &-name {

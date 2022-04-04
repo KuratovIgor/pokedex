@@ -37,3 +37,13 @@ export type AbilityType = {
 export type PaginationType = {
   offset: number
 }
+
+export type EvolutionType = EvolutionItem[][]
+
+type EvolutionItem = {
+  name: string
+  id: number
+  image: string
+  types: string[]
+  stage: number
+}

@@ -4,12 +4,9 @@
       v-if="isAbilityOpen"
       class="pokemon-description__about-pokemon"
       :name="abilityName"
-      @on-close-click="closeDescription"
+      @on-close-click="handleCloseDescription"
     />
-    <div
-      v-if="!isAbilityOpen"
-      class="pokemon-description__about-pokemon about-pokemon"
-    >
+    <div v-else class="pokemon-description__about-pokemon about-pokemon">
       <div class="about-pokemon__left-column">
         <div class="about-pokemon__item">
           <div class="about-pokemon__item-title">Height</div>
@@ -88,14 +85,14 @@ export default defineComponent({
       isAbilityOpen.value = true
     }
 
-    const closeDescription = (): void => {
+    const handleCloseDescription = (): void => {
       isAbilityOpen.value = false
     }
 
     return {
       abilityName,
       isAbilityOpen,
-      closeDescription,
+      handleCloseDescription,
       openAbilityDescription,
     }
   },
@@ -110,7 +107,7 @@ export default defineComponent({
     margin-bottom: 20px;
     border: 1px solid #000;
     border-radius: 10px;
-    background-color: #30a7d7;
+    background-color: $color-blue;
   }
 
   &__type {
@@ -132,7 +129,7 @@ export default defineComponent({
       align-items: center;
       justify-content: center;
       margin: 0 5px 5px 0;
-      border: 1px solid #000;
+      border: 1px solid $color-black;
       border-radius: 5px;
       width: 100px;
       height: 30px;
@@ -154,7 +151,7 @@ export default defineComponent({
 
     &-title {
       margin-bottom: 10px;
-      color: #fff;
+      color: $color-white;
     }
 
     &-value {

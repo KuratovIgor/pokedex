@@ -7,7 +7,7 @@
           <router-link :to="`/detail-page/${pokemon.id}`">
             <img
               :src="pokemon.image"
-              @click="submitPokemonToHistory(pokemon)"
+              @click="handleSubmitPokemonToHistory(pokemon)"
             />
           </router-link>
           <div class="pokemon-evolution__pokemon-info pokemon-info">
@@ -27,7 +27,7 @@
           </div>
         </div>
         <div
-          v-if="stage != evolution[evolution.length - 1]"
+          v-if="stage !== evolution[evolution.length - 1]"
           class="pokemon-evolution__arrow"
         />
       </div>
@@ -36,36 +36,36 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
-import { useStore } from 'vuex'
+import { defineComponent, PropType, ref } from 'vue'
 import { useRoute } from 'vue-router'
-import { PokemonType } from '@/types/pokemonType'
+import { PokemonType, EvolutionType } from '@/types/pokemonType'
+import { idToString, submitPokemonToHistory } from '@/utils'
 
 export default defineComponent({
   name: 'PokemonEvolution',
 
   props: {
-    evolution: Object,
+    evolution: Array as PropType<EvolutionType>,
   },
 
-  setup() {
-    const store = useStore()
+  setup(__, { emit }) {
     const route = useRoute()
 
-    const getIdString = (id: string): void => {
-      store.commit('idToString', id)
-      return store.getters.getIdString
+    const getIdString = (id: number): string => {
+      return idToString(id)
     }
 
-    const submitPokemonToHistory = (pokemon: PokemonType): void => {
+    const handleSubmitPokemonToHistory = (pokemon: PokemonType): void => {
       if (pokemon.id !== Number(route.params.id)) {
-        store.commit('submitPokemonToHistory', pokemon)
+        submitPokemonToHistory(pokemon)
+
+        emit('openPokemonDetail', { id: pokemon.id })
       }
     }
 
     return {
       getIdString,
-      submitPokemonToHistory,
+      handleSubmitPokemonToHistory,
     }
   },
 })
@@ -73,21 +73,21 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .pokemon-evolution {
-  border: 1px solid #000;
+  border: 1px solid $color-black;
   border-radius: 10px 10px 10px 50px;
   width: 1000px;
   min-height: 230px;
-  background-color: #616161;
+  background-color: $evolution-color;
 
   img {
-    border: 5px solid #fff;
+    border: 5px solid $color-white;
     border-radius: 50%;
     width: 120px;
     height: 120px;
-    box-shadow: 5px 5px 10px #000;
+    box-shadow: 5px 5px 10px $color-black;
 
     &:hover {
-      box-shadow: 5px 5px 20px #000;
+      box-shadow: 5px 5px 20px $color-black;
       transform: scale(1.05);
       transition: 0.1s linear;
     }
@@ -95,7 +95,7 @@ export default defineComponent({
 
   &__title {
     margin: 10px;
-    color: #fff;
+    color: $color-white;
   }
 
   &__stages {
@@ -116,7 +116,7 @@ export default defineComponent({
     align-self: center;
     justify-content: center;
     margin: 10px;
-    background-color: #616161;
+    background-color: $evolution-color;
   }
 
   &__pokemon-info {
@@ -129,7 +129,7 @@ export default defineComponent({
   &__arrow {
     align-self: center;
     margin-left: 50px;
-    border: 5px solid #fff;
+    border: 5px solid $color-white;
     border-bottom: hidden;
     border-left: hidden;
     width: 40px;
@@ -147,7 +147,7 @@ export default defineComponent({
 
   &__name {
     margin-right: 5px;
-    color: #fff;
+    color: $color-white;
   }
 
   &__id {
@@ -164,7 +164,7 @@ export default defineComponent({
     align-items: center;
     justify-content: center;
     margin: 0 5px 5px 0;
-    border: 1px solid #000;
+    border: 1px solid $color-black;
     border-radius: 5px;
     width: 70px;
     height: 25px;

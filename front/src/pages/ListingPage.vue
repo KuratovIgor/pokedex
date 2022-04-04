@@ -18,7 +18,7 @@ import PokemonList from '@/components/PokemonList.vue'
 import SidebarHistory from '@/components/SidebarHistory.vue'
 import { PaginationType, PokemonType } from '@/types/PokemonType'
 import { pokemonAPI } from '@/api/pokemon.api'
-import { useStore } from 'vuex'
+import { submitPokemonToHistory } from '@/utils'
 
 export default defineComponent({
   name: 'ListingPage',
@@ -29,8 +29,6 @@ export default defineComponent({
 
     let totalPages = ref<number>()
     let pokemonList = ref<PokemonType[]>([])
-
-    const store = useStore()
 
     const getPokemonList = async (offset: number) => {
       loading.value = true
@@ -47,10 +45,8 @@ export default defineComponent({
     }
 
     const handleSubmitPokemonToHistory = (pokemon: PokemonType): void => {
-      store.commit('submitPokemonToHistory', pokemon)
+      submitPokemonToHistory(pokemon)
     }
-
-    store.commit('getHostoryFromLocalStorage')
 
     onMounted(() => {
       getPokemonList(0)

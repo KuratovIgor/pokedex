@@ -24,14 +24,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, PropType } from 'vue'
-import { useStore } from 'vuex'
+import { defineComponent, PropType, ref } from 'vue'
+import { idToString } from '@/utils'
 
 export default defineComponent({
   name: 'PokemonCard',
 
   props: {
-    pokemonCount: Number,
     image: String,
     id: Number,
     name: String,
@@ -39,12 +38,7 @@ export default defineComponent({
   },
 
   setup(props, { emit }) {
-    const store = useStore()
-
-    const idString = computed((): string => {
-      store.commit('idToString', props.id)
-      return store.getters.getIdString
-    })
+    const idString = ref<string>(idToString(props.id))
 
     const onSubmitToHistory = (): void => {
       emit('onSubmitToHistory', {
@@ -68,7 +62,7 @@ export default defineComponent({
 
   &__image {
     margin-bottom: 10px;
-    border: 1px solid #000;
+    border: 1px solid $color-black;
     border-radius: 10%;
     width: 170px;
     height: 170px;
@@ -108,7 +102,7 @@ export default defineComponent({
     align-items: center;
     justify-content: center;
     margin: 0 5px 5px 0;
-    border: 1px solid #000;
+    border: 1px solid $color-black;
     border-radius: 5px;
     width: 70px;
     height: 25px;
