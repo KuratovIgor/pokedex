@@ -36,7 +36,7 @@
 import PokemonDescription from '@/components/detail/PokemonDescription.vue'
 import PokemonStats from '@/components/detail/PokemonStats.vue'
 import PokemonEvolution from '@/components/detail/PokemonEvolution.vue'
-import { defineComponent, ref, computed, onMounted } from 'vue'
+import { defineComponent, ref, onMounted } from 'vue'
 import { pokemonAPI } from '@/api/pokemon.api'
 import { useRoute } from 'vue-router'
 import { PokemonDetailType } from '@/types/pokemonType'

@@ -13,7 +13,7 @@
           <div class="pokemon-evolution__pokemon-info pokemon-info">
             <div class="pokemon-info__title">
               <div class="pokemon-info__name">{{ pokemon.name }}</div>
-              <div class="pokemon-info__id">{{ getIdString(pokemon.id) }}</div>
+              <div class="pokemon-info__id">{{ idToString(pokemon.id) }}</div>
             </div>
             <ul class="pokemon-info__types">
               <li
@@ -51,10 +51,6 @@ export default defineComponent({
   setup(__, { emit }) {
     const route = useRoute()
 
-    const getIdString = (id: number): string => {
-      return idToString(id)
-    }
-
     const handleSubmitPokemonToHistory = (pokemon: PokemonType): void => {
       if (pokemon.id !== Number(route.params.id)) {
         submitPokemonToHistory(pokemon)
@@ -64,7 +60,7 @@ export default defineComponent({
     }
 
     return {
-      getIdString,
+      idToString,
       handleSubmitPokemonToHistory,
     }
   },

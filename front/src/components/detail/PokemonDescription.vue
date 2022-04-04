@@ -38,7 +38,7 @@
                 width="15"
                 height="15"
                 name="question-sign"
-                @click="openAbilityDescription(ability)"
+                @click="handleOpenAbilityDescription(ability)"
               />
             </div>
           </div>
@@ -80,7 +80,7 @@ export default defineComponent({
     let abilityName = ref<string>()
     let isAbilityOpen = ref(false)
 
-    const openAbilityDescription = (ability: string): void => {
+    const handleOpenAbilityDescription = (ability: string): void => {
       abilityName.value = ability
       isAbilityOpen.value = true
     }
@@ -93,7 +93,7 @@ export default defineComponent({
       abilityName,
       isAbilityOpen,
       handleCloseDescription,
-      openAbilityDescription,
+      handleOpenAbilityDescription,
     }
   },
 })

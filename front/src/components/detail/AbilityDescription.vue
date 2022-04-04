@@ -10,7 +10,7 @@
         <div class="ability-description__title">ability info</div>
         <button
           class="ability-description__close"
-          @click.stop="handleCloseDescription"
+          @click="handleCloseDescription"
         >
           × Close
         </button>
