@@ -1,3 +1,6 @@
+import fastify from 'fastify'
+import axios from 'axios'
+
 export type PokemonType = {
   image: string,
   id: number,
@@ -9,7 +12,7 @@ export type PokemonType = {
   category: string,
   abilities: string[],
   stats: StatType,
-  evolution: EvolutionType[],
+  stage: any,
 }
 
 export type EvolutionType = {
@@ -17,7 +20,10 @@ export type EvolutionType = {
   id: number,
   image: string,
   types: string[],
-  stage: number,
+}
+
+type EvolutionStageType = {
+  stage: EvolutionType[]
 }
 
 type StatType = {
@@ -37,13 +43,13 @@ type GeneraType = {
 }
 
 export class PokemonDetailMapper {
-  static mapDetailInfoToFrontend = (
+  static mapDetailInfoToFrontend = async (
     pokemon: any,
     evolutionChain: EvolutionType[],
     gender: string,
-    genera: GeneraType[]): PokemonType =>
+    genera: GeneraType[]): Promise<PokemonType> =>
   {
-    const evolutionByStages = buildEvolutionChainByStages(evolutionChain)
+    let evolutionByStages = await buildEvolutionChain(evolutionChain)
 
     const visibleAbilities = pokemon.abilities.filter(item => !item.is_hidden)
     const category = genera.filter(item => item.language.name === 'en')
@@ -71,38 +77,49 @@ export class PokemonDetailMapper {
   }
 }
 
-function buildEvolutionChainByStages(evolutionChain: EvolutionType[]): any[]{
-  let evolutionByStages = generateEvolutionStages(evolutionChain)
+async function buildEvolutionChain(evolvesTo: EvolutionType[]): Promise<any[]>{
+  let countStages = 3
+  let evolutionChain: any[] = []
+  let currentStage: any[] = []
+  currentStage.push(evolvesTo)
 
-  for (let evolution of evolutionChain){
-    const evolveItem = {
-      id: evolution.id,
-      name: evolution.name,
-      image: evolution.image,
-      types: evolution.types,
+  for (let i = 0; i < countStages; i++) {
+    evolutionChain.push({ stage: [] })
+    for (let j = 0; j < currentStage.length; j++) {
+      const pokemonSpecies = await axios.get(currentStage[j].species.url)
+      const id = pokemonSpecies.data.id
+      const pokemon = await axios.get(`https://pokeapi.co/api/v2/pokemon/${id}`)
+      const name = pokemon.data.name
+      const image = pokemon.data.sprites.other['official-artwork'].front_default
+      const types = pokemon.data.types.map((item) => item.type.name)
+
+      const evolution = {
+        id: id,
+        name: name,
+        image: image,
+        types: types,
+      }
+
+      evolutionChain[i].stage.push(evolution)
     }
 
-    evolutionByStages[evolution.stage - 1].push(evolveItem)
-  }
+    let tempStages: any[] = []
 
-  return evolutionByStages
-}
-
-function generateEvolutionStages(evolutionChain: EvolutionType[]): any[] {
-  let stages: any[] = []
-  let maxStage = 1
-
-  for (let evolution of evolutionChain) {
-    if (evolution.stage > maxStage){
-      maxStage = evolution.stage
+    for (let j = 0; j < currentStage.length; j++) {
+      if (currentStage[j].evolves_to.length == 'undefined') {
+        tempStages.push(currentStage[j].evolves_to)
+      }
+      else {
+        for (let k = 0; k < currentStage[j].evolves_to.length; k++) {
+          tempStages.push(currentStage[j].evolves_to[k])
+        }
+      }
     }
+
+    currentStage = tempStages
   }
 
-  for (let i = 0; i < maxStage; i++){
-    stages.push([])
-  }
-
-  return stages
+  return evolutionChain
 }
 
 function calculateCountFilledCells(stat_value: number): number {

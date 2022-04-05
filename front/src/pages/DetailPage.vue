@@ -25,10 +25,7 @@
           :stat="pokemonDetail.stats"
         />
       </div>
-      <pokemon-evolution
-        :evolution="pokemonDetail.evolution"
-        @open-pokemon-detail="handleOpenDetailPage"
-      />
+      <pokemon-evolution :evolution="pokemonDetail.evolution" />
     </template>
   </div>
 </template>
@@ -36,9 +33,9 @@
 import PokemonDescription from '@/components/detail/PokemonDescription.vue'
 import PokemonStats from '@/components/detail/PokemonStats.vue'
 import PokemonEvolution from '@/components/detail/PokemonEvolution.vue'
-import { defineComponent, ref, onMounted } from 'vue'
+import { defineComponent, ref, onMounted, watch } from 'vue'
 import { pokemonAPI } from '@/api/pokemon.api'
-import { useRoute } from 'vue-router'
+import { onBeforeRouteUpdate, useRoute } from 'vue-router'
 import { PokemonDetailType } from '@/types/pokemonType'
 import { idToString } from '@/utils'
 
@@ -53,6 +50,10 @@ export default defineComponent({
 
     const route = useRoute()
 
+    onBeforeRouteUpdate(async (to) => {
+      await getPokemonDetail(to.params.id)
+    })
+
     const getPokemonDetail = async (id): Promise<void> => {
       loading.value = true
 
@@ -63,10 +64,6 @@ export default defineComponent({
       loading.value = false
     }
 
-    const handleOpenDetailPage = async (item): Promise<void> => {
-      await getPokemonDetail(item.id)
-    }
-
     onMounted(() => {
       getPokemonDetail(route.params.id)
     })
@@ -75,7 +72,6 @@ export default defineComponent({
       loading,
       pokemonDetail,
       idString,
-      handleOpenDetailPage,
     }
   },
 })

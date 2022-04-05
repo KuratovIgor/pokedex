@@ -22,12 +22,14 @@ const PokemonSchema = Type.Object({
     special_defence: Type.Number(),
     speed: Type.Number(),
   }),
-  evolution: Type.Array(Type.Array(Type.Object({
-    name: Type.String(),
-    id: Type.Number(),
-    image: Type.String(),
-    types: Type.Array(Type.String()),
-  })))
+  evolution: Type.Array(Type.Object({
+    stage: Type.Array(Type.Object({
+      name: Type.String(),
+      id: Type.Number(),
+      image: Type.String(),
+      types: Type.Array(Type.String())
+    })),
+  }))
 })
 
 const ResponseSchema = Type.Object({
@@ -63,17 +65,15 @@ const pokemonRoute = (fastify: FastifyInstance) => {
 
           const genera = pokemonSpecies.data.genera
           const gender: string = await getPokemonGender(pokemonFromApi.data.name, fastify)
-          const evolutionChain: EvolutionType[] = await getEvolutionChain(
-            pokemonEvolution.data.chain,
-            fastify
-          )
 
-          const detailInfo: PokemonType = PokemonDetailMapper.mapDetailInfoToFrontend(
+          const detailInfo: PokemonType = await PokemonDetailMapper.mapDetailInfoToFrontend(
             pokemonFromApi.data,
-            evolutionChain,
+            pokemonEvolution.data.chain,
             gender,
             genera
           )
+
+          console.log(detailInfo)
 
           await repl.send({
             pokemon: detailInfo
@@ -86,56 +86,16 @@ const pokemonRoute = (fastify: FastifyInstance) => {
   )
 }
 
-
-async function getEvolutionChain(evolvesTo, fastify): Promise<EvolutionType[]> {
-  let evolutionChain: EvolutionType[] = []
-
-  await getEvolveStage(evolvesTo, 0)
-
-  async function getEvolveStage(evolvesTo, stage) {
-    for(let item in evolvesTo) {
-      if(typeof(evolvesTo[item]) === 'object') {
-        if (item == 'evolves_to') {
-          await getEvolveStage(evolvesTo[item], ++stage)
-        }
-        else {
-          await getEvolveStage(evolvesTo[item], stage)
-        }
-      } else {
-        if (typeof(evolvesTo[item]) == 'string' && evolvesTo[item].includes('pokemon-species'))
-        {
-          const pokemonSpecies = await fastify.axios.get(evolvesTo[item])
-          const id = pokemonSpecies.data.id
-          const pokemon = await fastify.axios.get(`https://pokeapi.co/api/v2/pokemon/${id}`)
-          const name = pokemon.data.name
-          const image = pokemon.data.sprites.other['official-artwork'].front_default
-          const types = pokemon.data.types.map((item) => item.type.name)
-
-          const evolution = {
-            id: id,
-            name: name,
-            image: image,
-            types: types,
-            stage: stage,
-          }
-
-          evolutionChain.push(evolution)
-        }
-      }
-    }
-  }
-
-  return evolutionChain
-}
-
 async function getPokemonGender(name: string, fastify): Promise<string> {
   let result = ''
 
   const femaleApi = await fastify.axios.get('https://pokeapi.co/api/v2/gender/1/')
   const maleApi = await fastify.axios.get('https://pokeapi.co/api/v2/gender/2/')
+  const genderlessApi = await fastify.axios.get('https://pokeapi.co/api/v2/gender/3/')
 
   const pokemonListFemale = femaleApi.data.pokemon_species_details
   const pokemonListMale = maleApi.data.pokemon_species_details
+  const pokemonListGenderless = genderlessApi.data.pokemon_species_details
 
   const isPokemonFemale = () => {
     return pokemonListFemale.filter(item => item.pokemon_species.name === name).length > 0
@@ -145,12 +105,21 @@ async function getPokemonGender(name: string, fastify): Promise<string> {
     return pokemonListMale.filter(item => item.pokemon_species.name === name).length > 0
   }
 
-  if (isPokemonFemale()){
-    result += '♀ '
+  const isPokemonGenderless = () => {
+    return pokemonListGenderless.filter(item => item.pokemon_species.name === name).length > 0
   }
 
-  if (isPokemonMale()){
-    result += '♂ '
+  if (isPokemonGenderless()){
+    result = 'Unknown'
+  }
+  else {
+    if (isPokemonFemale()){
+      result += '♀ '
+    }
+
+    if (isPokemonMale()){
+      result += '♂ '
+    }
   }
 
   return result

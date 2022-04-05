@@ -38,12 +38,8 @@ export type PaginationType = {
   offset: number
 }
 
-export type EvolutionType = EvolutionItem[][]
+export type EvolutionType = EvolutionItemType[]
 
-type EvolutionItem = {
-  name: string
-  id: number
-  image: string
-  types: string[]
-  stage: number
+type EvolutionItemType = {
+  stage: PokemonType[]
 }
