@@ -34,8 +34,6 @@ export default defineComponent({
   min-height: 100vh;
   background: url('../assets/images/fon.png');
 
-  //background: linear-gradient(to right, #fff 42%, #b7d1e5 100%);
-
   &__content {
     display: flex;
     align-items: center;
