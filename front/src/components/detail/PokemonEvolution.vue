@@ -61,7 +61,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, ref } from 'vue'
+import { computed, defineComponent, PropType, ref } from 'vue'
 import { EvolutionType } from '@/types/pokemonType'
 import { idToString } from '@/utils'
 import PokemonEvolutionItem from '@/components/detail/PokemonEvolutionItem.vue'
@@ -124,22 +124,7 @@ export default defineComponent({
   border: 1px solid $color-black;
   border-radius: 10px 10px 10px 50px;
   width: 1000px;
-  min-height: 230px;
   background-color: $evolution-color;
-
-  img {
-    border: 5px solid $color-white;
-    border-radius: 50%;
-    width: 120px;
-    height: 120px;
-    box-shadow: 5px 5px 10px $color-black;
-
-    &:hover {
-      box-shadow: 5px 5px 20px $color-black;
-      transform: scale(1.05);
-      transition: 0.1s linear;
-    }
-  }
 
   &__title {
     margin: 10px;
@@ -153,17 +138,10 @@ export default defineComponent({
 
   &__stage-first {
     display: flex;
-    margin-left: 20px;
   }
 
   &__stage-middle {
-    margin-left: 20px;
     max-width: 800px;
-  }
-
-  &__stage-last {
-    margin-left: 20px;
-    max-width: 300px;
   }
 
   &__stage-item {
@@ -191,7 +169,7 @@ export default defineComponent({
 
   &__arrow {
     align-self: center;
-    margin-left: 20px;
+    margin: 0 30px;
     border: 5px solid $color-white;
     border-bottom: hidden;
     border-left: hidden;

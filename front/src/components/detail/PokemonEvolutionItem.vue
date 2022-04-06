@@ -71,8 +71,8 @@ export default defineComponent({
   img {
     border: 5px solid $color-white;
     border-radius: 50%;
-    width: 120px;
-    height: 120px;
+    width: 140px;
+    height: 140px;
     box-shadow: 5px 5px 10px $color-black;
 
     &:hover {

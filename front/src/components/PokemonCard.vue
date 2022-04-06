@@ -24,7 +24,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, ref } from 'vue'
+import { computed, defineComponent, PropType } from 'vue'
 import { idToString } from '../utils'
 
 export default defineComponent({
@@ -38,7 +38,9 @@ export default defineComponent({
   },
 
   setup(props, { emit }) {
-    const idString = ref<string>(idToString(props.id))
+    const idString = computed((): string => {
+      return idToString(props.id)
+    })
 
     const handleSubmitToHistory = (): void => {
       emit('onSubmitToHistory', {
