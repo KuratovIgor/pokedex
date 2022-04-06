@@ -4,7 +4,7 @@
       <img
         class="pokemon-card__image"
         :src="image"
-        @click="onSubmitToHistory"
+        @click="handleSubmitToHistory"
       />
     </router-link>
     <div class="pokemon-info">
@@ -25,7 +25,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType, ref } from 'vue'
-import { idToString } from '@/utils'
+import { idToString } from '../utils'
 
 export default defineComponent({
   name: 'PokemonCard',
@@ -40,7 +40,7 @@ export default defineComponent({
   setup(props, { emit }) {
     const idString = ref<string>(idToString(props.id))
 
-    const onSubmitToHistory = (): void => {
+    const handleSubmitToHistory = (): void => {
       emit('onSubmitToHistory', {
         image: props.image,
         name: props.name,
@@ -49,7 +49,7 @@ export default defineComponent({
     }
 
     return {
-      onSubmitToHistory,
+      handleSubmitToHistory,
       idString,
     }
   },

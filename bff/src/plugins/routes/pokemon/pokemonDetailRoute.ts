@@ -1,26 +1,30 @@
 import { Static, Type } from '@sinclair/typebox'
 import { FastifyInstance } from 'fastify/types/instance'
-import { PokemonType, EvolutionType, PokemonDetailMapper } from '../../mappers/pokemonDetailMapper'
+import { PokemonDetailMapper } from '../../mappers/pokemonDetailMapper'
 import fastify from 'fastify'
 import { type } from 'os'
+import { EvolutionMapper, EvolutionStageType, StageType } from '../../mappers/evolutionMapper'
+import { DetailFullMapper, PokemonDetailType } from '../../mappers/detailFullMapper'
 
 const PokemonSchema = Type.Object({
-  image: Type.String(),
-  id: Type.Number(),
-  name: Type.String(),
-  types: Type.Array(Type.String()),
-  height: Type.Number(),
-  weight: Type.Number(),
-  gender: Type.String(),
-  category: Type.String(),
-  abilities: Type.Array(Type.String()),
-  stats: Type.Object({
-    hp: Type.Number(),
-    attack: Type.Number(),
-    defence: Type.Number(),
-    special_attack: Type.Number(),
-    special_defence: Type.Number(),
-    speed: Type.Number(),
+  pokemonInfo: Type.Object({
+    image: Type.String(),
+    id: Type.Number(),
+    name: Type.String(),
+    types: Type.Array(Type.String()),
+    height: Type.Number(),
+    weight: Type.Number(),
+    gender: Type.String(),
+    category: Type.String(),
+    abilities: Type.Array(Type.String()),
+    stats: Type.Object({
+      hp: Type.Number(),
+      attack: Type.Number(),
+      defence: Type.Number(),
+      specialAttack: Type.Number(),
+      specialDefence: Type.Number(),
+      speed: Type.Number(),
+    })
   }),
   evolution: Type.Array(Type.Object({
     stage: Type.Array(Type.Object({
@@ -61,19 +65,24 @@ const pokemonRoute = (fastify: FastifyInstance) => {
         if (id)  {
           const pokemonFromApi = await fastify.axios.get(`https://pokeapi.co/api/v2/pokemon/${id}`)
           const pokemonSpecies = await fastify.axios.get(pokemonFromApi.data.species.url)
-          const pokemonEvolution = await fastify.axios.get(pokemonSpecies.data.evolution_chain.url)
+          const evolutionFromApi = await fastify.axios.get(pokemonSpecies.data.evolution_chain.url)
 
           const genera = pokemonSpecies.data.genera
           const gender: string = await getPokemonGender(pokemonFromApi.data.name, fastify)
 
-          const detailInfo: PokemonType = await PokemonDetailMapper.mapDetailInfoToFrontend(
+          const urlStages = EvolutionMapper.mapEvolutionToFronted(evolutionFromApi.data.chain)
+          const pokemonInfo = PokemonDetailMapper.mapPokemonInfoToFrontend(
             pokemonFromApi.data,
-            pokemonEvolution.data.chain,
             gender,
             genera
           )
 
-          console.log(detailInfo)
+          const evolutionChain = await getPokemonEvolution(urlStages, fastify)
+
+          const detailInfo: PokemonDetailType = DetailFullMapper.mapDetailInfoToFrontend(
+            pokemonInfo,
+            evolutionChain,
+          )
 
           await repl.send({
             pokemon: detailInfo
@@ -86,31 +95,54 @@ const pokemonRoute = (fastify: FastifyInstance) => {
   )
 }
 
+async function getPokemonEvolution(stages: StageType[], fastify): Promise<EvolutionStageType[]> {
+  let evolutionChain: EvolutionStageType[] = []
+
+  for (let i in stages) {
+    evolutionChain.push({ stage: [] })
+    for (let url of stages[i].stage){
+      const pokemonSpecies = await fastify.axios.get(url)
+      const pokemonFromApi = await fastify.axios.get(`https://pokeapi.co/api/v2/pokemon/${pokemonSpecies.data.id}`)
+
+      const pokemon = {
+        id: pokemonFromApi.data.id,
+        name: pokemonFromApi.data.name,
+        image: pokemonFromApi.data.sprites.other['official-artwork'].front_default,
+        types: pokemonFromApi.data.types.map((item) => item.type.name),
+      }
+
+      evolutionChain[i].stage.push(pokemon)
+    }
+  }
+
+  return evolutionChain
+}
+
 async function getPokemonGender(name: string, fastify): Promise<string> {
   let result = ''
 
-  const femaleApi = await fastify.axios.get('https://pokeapi.co/api/v2/gender/1/')
-  const maleApi = await fastify.axios.get('https://pokeapi.co/api/v2/gender/2/')
-  const genderlessApi = await fastify.axios.get('https://pokeapi.co/api/v2/gender/3/')
+  const female = await fastify.axios.get('https://pokeapi.co/api/v2/gender/1/')
+  const male = await fastify.axios.get('https://pokeapi.co/api/v2/gender/2/')
+  const genderless = await fastify.axios.get('https://pokeapi.co/api/v2/gender/3/')
 
-  const pokemonListFemale = femaleApi.data.pokemon_species_details
-  const pokemonListMale = maleApi.data.pokemon_species_details
-  const pokemonListGenderless = genderlessApi.data.pokemon_species_details
+  const femaleList = female.data.pokemon_species_details
+  const maleList = male.data.pokemon_species_details
+  const genderlessList = genderless.data.pokemon_species_details
 
   const isPokemonFemale = () => {
-    return pokemonListFemale.filter(item => item.pokemon_species.name === name).length > 0
+    return femaleList.filter(item => item.pokemon_species.name === name).length > 0
   }
 
   const isPokemonMale = () => {
-    return pokemonListMale.filter(item => item.pokemon_species.name === name).length > 0
+    return maleList.filter(item => item.pokemon_species.name === name).length > 0
   }
 
   const isPokemonGenderless = () => {
-    return pokemonListGenderless.filter(item => item.pokemon_species.name === name).length > 0
+    return genderlessList.filter(item => item.pokemon_species.name === name).length > 0
   }
 
   if (isPokemonGenderless()){
-    result = 'Unknown'
+    result = 'Genderless'
   }
   else {
     if (isPokemonFemale()){

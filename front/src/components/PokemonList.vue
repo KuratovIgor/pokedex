@@ -12,7 +12,7 @@
       />
     </div>
     <el-pagination
-      class="listing__pagination"
+      class="pokemon-list__pagination"
       layout="prev, pager, next"
       :current-page="currentPage"
       :page-size="1"

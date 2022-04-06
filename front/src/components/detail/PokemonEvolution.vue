@@ -79,15 +79,14 @@ export default defineComponent({
     const countSecondArrows = ref<number>()
 
     const setCountArrow = (id: number): number => {
-      if (props.evolution[id].stage.length == 2) {
-        return 2
+      if (
+        props.evolution[id].stage.length !== 1 &&
+        props.evolution[id].stage.length < 3
+      ) {
+        return props.evolution[id].stage.length
+      } else {
+        return 1
       }
-
-      if (props.evolution[id].stage.length == 0) {
-        return 0
-      }
-
-      return 1
     }
 
     countFirstArrows.value = setCountArrow(1)
@@ -193,7 +192,7 @@ export default defineComponent({
   &__arrow {
     align-self: center;
     margin-left: 20px;
-    border: 3px solid $color-white;
+    border: 5px solid $color-white;
     border-bottom: hidden;
     border-left: hidden;
     width: 30px;

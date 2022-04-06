@@ -25,7 +25,7 @@
           :stat="pokemonDetail.stats"
         />
       </div>
-      <pokemon-evolution :evolution="pokemonDetail.evolution" />
+      <pokemon-evolution :evolution="pokemonEvolution" :key="$forceUpdate" />
     </template>
   </div>
 </template>
@@ -36,8 +36,8 @@ import PokemonEvolution from '@/components/detail/PokemonEvolution.vue'
 import { defineComponent, ref, onMounted, watch } from 'vue'
 import { pokemonAPI } from '@/api/pokemon.api'
 import { onBeforeRouteUpdate, useRoute } from 'vue-router'
-import { PokemonDetailType } from '@/types/pokemonType'
-import { idToString } from '@/utils'
+import { EvolutionType, PokemonDetailType } from '@/types/pokemonType'
+import { idToString } from '../utils'
 
 export default defineComponent({
   name: 'DetailPage',
@@ -46,31 +46,34 @@ export default defineComponent({
   setup() {
     const loading = ref(false)
     let pokemonDetail = ref<PokemonDetailType>()
+    let pokemonEvolution = ref<EvolutionType>()
     let idString = ref<string>()
 
     const route = useRoute()
 
     onBeforeRouteUpdate(async (to) => {
-      await getPokemonDetail(to.params.id)
+      await getPokemonDetail(Number(to.params.id))
     })
 
-    const getPokemonDetail = async (id): Promise<void> => {
+    const getPokemonDetail = async (id: number): Promise<void> => {
       loading.value = true
 
       const [error, data] = await pokemonAPI.getPokemonDelail(id)
-      pokemonDetail.value = data.pokemon
+      pokemonDetail.value = data.pokemon.pokemonInfo
+      pokemonEvolution.value = data.pokemon.evolution
       idString.value = idToString(pokemonDetail.value.id)
 
       loading.value = false
     }
 
     onMounted(() => {
-      getPokemonDetail(route.params.id)
+      getPokemonDetail(Number(route.params.id))
     })
 
     return {
       loading,
       pokemonDetail,
+      pokemonEvolution,
       idString,
     }
   },

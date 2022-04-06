@@ -6,19 +6,19 @@
         @click="handleSubmitPokemonToHistory(pokemon)"
       />
     </router-link>
-    <div class="pokemon-evolution-item-info pokemon-info">
-      <div class="pokemon-info__title">
-        <div class="pokemon-info__name">
+    <div class="pokemon-evolution-item__info">
+      <div class="pokemon-evolution-item__title">
+        <div class="pokemon-evolution-item__name">
           {{ pokemon.name }}
         </div>
-        <div class="pokemon-info__id">
+        <div class="pokemon-evolution-item__id">
           {{ idToString(pokemon.id) }}
         </div>
       </div>
-      <ul class="pokemon-info__types">
+      <ul class="pokemon-evolution-item__types">
         <li
           v-for="type in pokemon.types"
-          class="pokemon-info__type"
+          class="pokemon-evolution-item__type"
           :class="`${type}-type`"
         >
           {{ type }}
@@ -68,13 +68,6 @@ export default defineComponent({
   margin: 10px;
   background-color: $evolution-color;
 
-  &__pokemon-info {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin: 5px 0;
-  }
-
   img {
     border: 5px solid $color-white;
     border-radius: 50%;
@@ -88,9 +81,14 @@ export default defineComponent({
       transition: 0.1s linear;
     }
   }
-}
 
-.pokemon-info {
+  &__info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 5px 0;
+  }
+
   &__title {
     display: flex;
     margin-bottom: 10px;
