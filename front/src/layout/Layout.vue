@@ -32,7 +32,9 @@ export default defineComponent({
   justify-content: space-between;
   height: 100%;
   min-height: 100vh;
-  background: linear-gradient(to right, #fff 42%, #b7d1e5 100%);
+  background: url('../assets/images/fon.png');
+
+  //background: linear-gradient(to right, #fff 42%, #b7d1e5 100%);
 
   &__content {
     display: flex;

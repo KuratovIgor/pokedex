@@ -80,9 +80,5 @@ export default defineComponent({
   &__card {
     margin: 0 25px 25px;
   }
-
-  &__pagination {
-    font-weight: 700;
-  }
 }
 </style>

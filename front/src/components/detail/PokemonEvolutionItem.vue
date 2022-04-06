@@ -66,7 +66,7 @@ export default defineComponent({
   align-self: center;
   justify-content: center;
   margin: 10px;
-  background-color: $evolution-color;
+  background-color: transparent;
 
   img {
     border: 5px solid $color-white;

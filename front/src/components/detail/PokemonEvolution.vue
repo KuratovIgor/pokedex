@@ -124,7 +124,7 @@ export default defineComponent({
   border: 1px solid $color-black;
   border-radius: 10px 10px 10px 50px;
   width: 1000px;
-  background-color: $evolution-color;
+  background: url('../../assets/images/evolution_bg.png');
 
   &__title {
     margin: 10px;
@@ -151,7 +151,6 @@ export default defineComponent({
     align-self: center;
     justify-content: center;
     margin: 10px;
-    background-color: $evolution-color;
   }
 
   &__pokemon-info {
