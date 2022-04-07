@@ -15,8 +15,8 @@ type PokemonType = {
 
 export class EvolutionMapper {
   static mapEvolutionToFronted = (evolvesTo: any): StageType[] => {
-    let countStages = 3
-    let evolutionChain: StageType[] = []
+    const countStages = 3
+    const evolutionChain: StageType[] = []
     let currentStage: any[] = []
     currentStage.push(evolvesTo)
 
@@ -26,7 +26,7 @@ export class EvolutionMapper {
         evolutionChain[i].stage.push(currentStage[j].species.url)
       }
 
-      let tempStages: any[] = []
+      const tempStages: any[] = []
 
       for (let j = 0; j < currentStage.length; j++) {
         if (currentStage[j].evolves_to.length == 'undefined') {

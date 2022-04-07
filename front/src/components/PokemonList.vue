@@ -41,13 +41,13 @@ export default defineComponent({
 
     const handleChangeCurrentPage = (val: number): void => {
       currentPage.value = val
-      emit('onChangePage', {
+      emit('on-change-page', {
         offset: (currentPage.value - 1) * 10,
       })
     }
 
     const handleSubmitToHistory = (item: PokemonType): void => {
-      emit('onSubmitToHistory', {
+      emit('on-submit-to-history', {
         image: item.image,
         name: item.name,
         id: item.id,

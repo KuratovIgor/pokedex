@@ -51,7 +51,7 @@ export default defineComponent({
     }
 
     const handleCloseDescription = (): void => {
-      emit('onCloseClick')
+      emit('on-close-click')
     }
 
     onMounted(() => {

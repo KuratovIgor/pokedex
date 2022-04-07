@@ -43,7 +43,7 @@ export default defineComponent({
     })
 
     const handleSubmitToHistory = (): void => {
-      emit('onSubmitToHistory', {
+      emit('on-submit-to-history', {
         image: props.image,
         name: props.name,
         id: props.id,
