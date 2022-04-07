@@ -1,0 +1,20 @@
+.el-pager li {
+  margin: 5px;
+  border: 1px solid #000;
+  border-radius: 10px;
+  width: 50px;
+  font-size: 15px;
+  background: transparent;
+}
+
+.el-pagination .btn-next,
+.el-pagination .btn-prev,
+.el-pagination button:disabled {
+  border: 1px solid #000;
+  border-radius: 50%;
+}
+
+.el-icon svg {
+  width: 15px;
+  height: 15px;
+}

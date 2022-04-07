@@ -1,6 +1,5 @@
 <template>
   <div class="listing-page">
-    <div class="listing-page__loading" />
     <pokemon-list
       v-loading="loading"
       element-loading-text="Loading..."
@@ -19,6 +18,7 @@ import PokemonList from '@/components/PokemonList.vue'
 import SidebarHistory from '@/components/SidebarHistory.vue'
 import { PaginationType, PokemonType } from '@/types/PokemonType'
 import { pokemonAPI } from '@/api/pokemon.api'
+import { submitPokemonToHistory } from '@/utils'
 
 export default defineComponent({
   name: 'ListingPage',
@@ -29,7 +29,6 @@ export default defineComponent({
 
     let totalPages = ref<number>()
     let pokemonList = ref<PokemonType[]>([])
-    let pokemonListHistory = ref<PokemonType[]>([])
 
     const getPokemonList = async (offset: number) => {
       loading.value = true
@@ -45,28 +44,8 @@ export default defineComponent({
       getPokemonList(pagination.offset)
     }
 
-    const pokemonListFromLocalStorage: PokemonType[] = JSON.parse(
-      localStorage.getItem('pokemon-list')
-    )
-
-    if (
-      typeof pokemonListFromLocalStorage !== 'undefined' &&
-      pokemonListFromLocalStorage !== null
-    ) {
-      for (let pokemon of pokemonListFromLocalStorage) {
-        pokemonListHistory.value.push(pokemon)
-      }
-    }
-
     const handleSubmitPokemonToHistory = (pokemon: PokemonType): void => {
-      if (pokemonListHistory.value.length === 5) {
-        pokemonListHistory.value.pop()
-      }
-      pokemonListHistory.value.unshift(pokemon)
-      localStorage.setItem(
-        'pokemon-list',
-        JSON.stringify(pokemonListHistory.value)
-      )
+      submitPokemonToHistory(pokemon)
     }
 
     onMounted(() => {
@@ -77,7 +56,6 @@ export default defineComponent({
       loading,
       totalPages,
       pokemonList,
-      pokemonListHistory,
       getPokemonList,
       handleSubmitPokemonToHistory,
       handleChangePage,
@@ -88,8 +66,6 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .listing-page {
-  &__loading {
-    margin: 0 0 0 800px;
-  }
+  min-width: 1000px;
 }
 </style>

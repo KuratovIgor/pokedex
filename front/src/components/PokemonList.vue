@@ -4,7 +4,6 @@
       <pokemon-card
         class="pokemon-list__card"
         v-for="pokemon in pokemonList"
-        :pokemon-count="1127"
         :image="pokemon.image"
         :id="pokemon.id"
         :name="pokemon.name"
@@ -13,7 +12,7 @@
       />
     </div>
     <el-pagination
-      class="listing__pagination"
+      class="pokemon-list__pagination"
       layout="prev, pager, next"
       :current-page="currentPage"
       :page-size="1"
@@ -38,17 +37,17 @@ export default defineComponent({
   },
 
   setup(props, { emit }) {
-    const currentPage = ref<number>(1)
+    const currentPage = ref(1)
 
     const handleChangeCurrentPage = (val: number): void => {
       currentPage.value = val
-      emit('onChangePage', {
+      emit('on-change-page', {
         offset: (currentPage.value - 1) * 10,
       })
     }
 
     const handleSubmitToHistory = (item: PokemonType): void => {
-      emit('onSubmitToHistory', {
+      emit('on-submit-to-history', {
         image: item.image,
         name: item.name,
         id: item.id,
@@ -80,10 +79,6 @@ export default defineComponent({
 
   &__card {
     margin: 0 25px 25px;
-  }
-
-  &__pagination {
-    font-weight: 700;
   }
 }
 </style>

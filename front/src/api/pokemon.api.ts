@@ -16,6 +16,20 @@ class PokemonAPI extends AxiosService {
       },
     })
   }
+
+  public getPokemonDelail(id: number) {
+    return this.axiosCall({
+      method: 'get',
+      url: `/api/pokemon/${id}`,
+    })
+  }
+
+  public getAbilityInfo(abilityName: string) {
+    return this.axiosCall({
+      method: 'get',
+      url: `/api/ability/${abilityName}`,
+    })
+  }
 }
 
 export const pokemonAPI = new PokemonAPI({

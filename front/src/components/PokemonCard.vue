@@ -4,15 +4,19 @@
       <img
         class="pokemon-card__image"
         :src="image"
-        @click="onSubmitToHistory"
+        @click="handleSubmitToHistory"
       />
     </router-link>
     <div class="pokemon-info">
       <p class="pokemon-info__number">{{ idString }}</p>
       <h3 class="pokemon-info__name">{{ name }}</h3>
       <ul class="pokemon-abilities">
-        <li v-for="type in types" class="pokemon-abilities__item">
-          <div>{{ type }}</div>
+        <li
+          v-for="type in types"
+          class="pokemon-abilities__item"
+          :class="`${type}-type`"
+        >
+          {{ type }}
         </li>
       </ul>
     </div>
@@ -20,13 +24,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, PropType } from 'vue'
+import { computed, defineComponent, PropType } from 'vue'
+import { idToString } from '../utils'
 
 export default defineComponent({
   name: 'PokemonCard',
 
   props: {
-    pokemonCount: Number,
     image: String,
     id: Number,
     name: String,
@@ -34,31 +38,22 @@ export default defineComponent({
   },
 
   setup(props, { emit }) {
-    const onSubmitToHistory = (): void => {
-      emit('onSubmitToHistory', {
+    const idString = computed((): string => {
+      return idToString(props.id)
+    })
+
+    const handleSubmitToHistory = (): void => {
+      emit('on-submit-to-history', {
         image: props.image,
         name: props.name,
         id: props.id,
       })
     }
 
-    const idString = computed(() => {
-      if (typeof props.id !== 'undefined') {
-        let idString: string = props.id.toString()
-        const idLength: number = idString.length
-        const totalLength: number = props.pokemonCount.toString().length
-
-        for (let i = 0; i < totalLength - idLength; i++) {
-          idString = '0' + idString
-        }
-
-        idString = '#' + idString
-
-        return idString
-      }
-    })
-
-    return { onSubmitToHistory, idString }
+    return {
+      handleSubmitToHistory,
+      idString,
+    }
   },
 })
 </script>
@@ -68,9 +63,12 @@ export default defineComponent({
   font-family: 'Arial';
 
   &__image {
+    margin-bottom: 10px;
+    border: 1px solid $color-black;
     border-radius: 10%;
     width: 170px;
     height: 170px;
+    box-shadow: 2px 2px 10px #000;
     background: $card-color;
   }
 
@@ -81,7 +79,7 @@ export default defineComponent({
 
     &__number {
       margin-bottom: 10px;
-      font-size: 11px;
+      font-size: 12px;
       color: $id-color;
     }
 
@@ -98,13 +96,18 @@ export default defineComponent({
 
 .pokemon-abilities {
   display: flex;
+  flex-wrap: wrap;
+  max-width: 170px;
 
   &__item {
-    margin-right: 5px;
-    border: 1px solid #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 5px 5px 0;
+    border: 1px solid $color-black;
     border-radius: 5px;
-    width: 60px;
-    text-align: center;
+    width: 70px;
+    height: 25px;
   }
 }
 

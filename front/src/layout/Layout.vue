@@ -30,7 +30,9 @@ export default defineComponent({
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  height: 100vh;
+  height: 100%;
+  min-height: 100vh;
+  background: url('../assets/images/fon.png');
 
   &__content {
     display: flex;
@@ -39,7 +41,8 @@ export default defineComponent({
   }
 
   &__content-sidebar {
-    margin-right: 50px;
+    align-self: flex-start;
+    margin: -40px 50px 0 0;
     height: 100%;
   }
 

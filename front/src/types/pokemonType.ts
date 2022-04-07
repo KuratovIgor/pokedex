@@ -7,7 +7,7 @@ export type PokemonType = {
 
 export type PokemonDetailType = {
   image: string
-  number: string
+  id: number
   name: string
   types: string[]
   weaknesses: string[]
@@ -29,6 +29,17 @@ export type StatType = {
   speed: number
 }
 
+export type AbilityType = {
+  name: string
+  description: string
+}
+
 export type PaginationType = {
   offset: number
+}
+
+export type EvolutionType = EvolutionItemType[]
+
+type EvolutionItemType = {
+  stage: PokemonType[]
 }

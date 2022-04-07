@@ -1,87 +1,81 @@
 <template>
-  <div class="detail-page">
-    <div class="detail-page__title">
-      <div class="detail-page__title__name">Bulbasaur</div>
-      <div class="detail-page__title__number">#001</div>
-    </div>
-    <div class="pokemon-info">
-      <div class="pokemon-info__detail">
-        <div class="pokemon-info__image">
-          <img
-            src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png"
+  <div
+    class="detail-page"
+    v-loading="loading"
+    element-loading-text="Loading..."
+    element-loading-background="rgba(0, 0, 0, 0.6)"
+  >
+    <template v-if="pokemonDetail">
+      <div class="detail-page__title">
+        <div class="detail-page__title-name">{{ pokemonDetail.name }}</div>
+        <div class="detail-page__title-number">{{ idString }}</div>
+      </div>
+      <div class="pokemon-info">
+        <div class="pokemon-info__detail">
+          <div class="pokemon-info__image">
+            <img :src="pokemonDetail.image" />
+          </div>
+          <pokemon-description
+            class="pokemon-info__description"
+            :pokemon="pokemonDetail"
           />
         </div>
-        <pokemon-description
-          class="pokemon-info__description"
-          :pokemon="pokemonDetail"
+        <pokemon-stats
+          class="pokemon-info__stats"
+          :stat="pokemonDetail.stats"
         />
       </div>
-      <pokemon-stats class="pokemon-info__stats" :stat="pokemonDetail.stats" />
-    </div>
-    <pokemon-evolution />
+      <pokemon-evolution :evolution="pokemonEvolution" :key="$forceUpdate" />
+    </template>
   </div>
 </template>
-<script>
-import PokemonDescription from '@/components/detail/PokemonDescription'
-import PokemonStats from '@/components/detail/PokemonStats'
-import PokemonEvolution from '@/components/detail/PokemonEvolution'
-import { defineComponent, ref } from 'vue'
+<script lang="ts">
+import PokemonDescription from '@/components/detail/PokemonDescription.vue'
+import PokemonStats from '@/components/detail/PokemonStats.vue'
+import PokemonEvolution from '@/components/detail/PokemonEvolution.vue'
+import { defineComponent, ref, onMounted, watch } from 'vue'
+import { pokemonAPI } from '@/api/pokemon.api'
+import { onBeforeRouteUpdate, useRoute } from 'vue-router'
+import { EvolutionType, PokemonDetailType } from '@/types/pokemonType'
+import { idToString } from '../utils'
 
 export default defineComponent({
   name: 'DetailPage',
   components: { PokemonEvolution, PokemonDescription, PokemonStats },
 
-  props: {
-    id: Number,
-  },
-
   setup() {
-    let pokemonDetail = ref({
-      image:
-        'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png',
-      number: 'N001',
-      name: 'pokemon name',
-      types: ['water', 'fire'],
-      weaknesses: ['water', 'fire'],
-      height: '0.5 m',
-      weight: '5.5 kg',
-      gender: '♂ ♀',
-      category: 'Balloon',
-      abilities: ['water', 'fire'],
-      stats: {
-        hp: 2,
-        attack: 5,
-        defence: 3,
-        specialAttack: 6,
-        specialDefence: 5,
-        speed: 10,
-      },
-      evolution: [
-        {
-          image:
-            'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png',
-          number: 'N001',
-          name: 'pokemon name',
-          types: ['water', 'fire'],
-        },
-        {
-          image:
-            'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png',
-          number: 'N001',
-          name: 'pokemon name',
-          types: ['water', 'fire'],
-        },
-        {
-          image:
-            'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png',
-          number: 'N001',
-          name: 'pokemon name',
-          types: ['water', 'fire'],
-        },
-      ],
+    const loading = ref(false)
+    let pokemonDetail = ref<PokemonDetailType>()
+    let pokemonEvolution = ref<EvolutionType>()
+    let idString = ref<string>()
+
+    const route = useRoute()
+
+    onBeforeRouteUpdate(async (to) => {
+      await getPokemonDetail(Number(to.params.id))
     })
 
-    return { pokemonDetail }
+    const getPokemonDetail = async (id: number): Promise<void> => {
+      loading.value = true
+
+      const [error, data] = await pokemonAPI.getPokemonDelail(id)
+      pokemonDetail.value = data.pokemon.pokemonInfo
+      pokemonEvolution.value = data.pokemon.evolution
+      idString.value = idToString(pokemonDetail.value.id)
+
+      loading.value = false
+    }
+
+    onMounted(() => {
+      getPokemonDetail(Number(route.params.id))
+    })
+
+    return {
+      loading,
+      pokemonDetail,
+      pokemonEvolution,
+      idString,
+    }
   },
 })
 </script>
@@ -91,6 +85,7 @@ export default defineComponent({
   display: flex;
   flex-direction: column;
   margin-left: 50px;
+  min-width: 1000px;
 
   &__title {
     display: flex;
@@ -99,11 +94,11 @@ export default defineComponent({
     font-family: 'Arial';
     font-size: 30px;
 
-    &__name {
+    &-name {
       margin-right: 10px;
     }
 
-    &__number {
+    &-number {
       color: $id-color;
     }
   }
@@ -120,9 +115,11 @@ export default defineComponent({
 
   &__image {
     img {
+      border: 1px solid $color-black;
+      border-radius: 15px;
       width: 450px;
       height: 450px;
-      background-color: #f2f2f2;
+      background-color: $card-color;
     }
   }
 
