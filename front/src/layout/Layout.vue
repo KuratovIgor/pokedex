@@ -45,9 +45,5 @@ export default defineComponent({
     margin: -40px 50px 0 0;
     height: 100%;
   }
-
-  &__content-listing {
-    margin-right: 200px;
-  }
 }
 </style>

@@ -10,10 +10,10 @@
     <div class="pokemon-info">
       <p class="pokemon-info__number">{{ idString }}</p>
       <h3 class="pokemon-info__name">{{ name }}</h3>
-      <ul class="pokemon-abilities">
+      <ul class="pokemon-types">
         <li
           v-for="type in types"
-          class="pokemon-abilities__item"
+          class="pokemon-types__item"
           :class="`${type}-type`"
         >
           {{ type }}
@@ -60,6 +60,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .pokemon-card {
+  max-width: 170px;
   font-family: 'Arial';
 
   &__image {
@@ -68,7 +69,7 @@ export default defineComponent({
     border-radius: 10%;
     width: 170px;
     height: 170px;
-    box-shadow: 2px 2px 10px #000;
+    box-shadow: 2px 2px 10px $color-black;
     background: $card-color;
   }
 
@@ -94,7 +95,7 @@ export default defineComponent({
   }
 }
 
-.pokemon-abilities {
+.pokemon-types {
   display: flex;
   flex-wrap: wrap;
   max-width: 170px;

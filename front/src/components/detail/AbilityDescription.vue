@@ -54,7 +54,7 @@ export default defineComponent({
       emit('on-close-click')
     }
 
-    onMounted(() => {
+    onMounted((): void => {
       getAbilityInfo(props.name)
     })
 
@@ -112,9 +112,24 @@ export default defineComponent({
   }
 
   &__text {
+    overflow: scroll;
+    overflow-x: hidden;
+    max-height: 120px;
     font-size: 15px;
     letter-spacing: 1px;
     color: $color-white;
+
+    &::-webkit-scrollbar {
+      border-radius: 20px;
+      width: 10px;
+      opacity: 100%;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      border: 1px solid $color-black;
+      border-radius: 20px;
+      background: #9da0a8;
+    }
   }
 }
 </style>
