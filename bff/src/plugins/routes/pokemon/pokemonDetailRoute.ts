@@ -1,10 +1,9 @@
 import { Static, Type } from '@sinclair/typebox'
 import { FastifyInstance } from 'fastify/types/instance'
-import { PokemonDetailMapper } from '../../mappers/pokemonDetailMapper'
-import fastify from 'fastify'
-import { type } from 'os'
-import { EvolutionMapper, EvolutionStageType, StageType } from '../../mappers/evolutionMapper'
-import { DetailFullMapper, PokemonDetailType } from '../../mappers/detailFullMapper'
+import { PokemonDetailMapper } from '~/plugins/mappers/pokemonDetailMapper'
+import { EvolutionMapper, EvolutionStageType, StageType } from '~/plugins/mappers/evolutionMapper'
+import { DetailFullMapper, PokemonDetailType } from '~/plugins/mappers/detailFullMapper'
+import { getPokemonImage } from '~/plugins/mappers/pokemonMapper'
 
 const PokemonSchema = Type.Object({
   pokemonInfo: Type.Object({
@@ -104,10 +103,12 @@ async function getPokemonEvolution(stages: StageType[], fastify): Promise<Evolut
       const pokemonSpecies = await fastify.axios.get(url)
       const pokemonFromApi = await fastify.axios.get(`https://pokeapi.co/api/v2/pokemon/${pokemonSpecies.data.id}`)
 
+      const image: string = getPokemonImage(pokemonFromApi.data)
+
       const pokemon = {
         id: pokemonFromApi.data.id,
         name: pokemonFromApi.data.name,
-        image: pokemonFromApi.data.sprites.other['official-artwork'].front_default,
+        image: image,
         types: pokemonFromApi.data.types.map((item) => item.type.name),
       }
 
@@ -123,35 +124,23 @@ async function getPokemonGender(name: string, fastify): Promise<string> {
 
   const female = await fastify.axios.get('https://pokeapi.co/api/v2/gender/1/')
   const male = await fastify.axios.get('https://pokeapi.co/api/v2/gender/2/')
-  const genderless = await fastify.axios.get('https://pokeapi.co/api/v2/gender/3/')
 
   const femaleList = female.data.pokemon_species_details
   const maleList = male.data.pokemon_species_details
-  const genderlessList = genderless.data.pokemon_species_details
 
-  const isPokemonFemale = () => {
-    return femaleList.filter(item => item.pokemon_species.name === name).length > 0
+  const isPokemonFemale = femaleList.filter(item => item.pokemon_species.name === name).length > 0
+  const isPokemonMale = maleList.filter(item => item.pokemon_species.name === name).length > 0
+
+  if (isPokemonFemale){
+    result += '♀ '
   }
 
-  const isPokemonMale = () => {
-    return maleList.filter(item => item.pokemon_species.name === name).length > 0
+  if (isPokemonMale){
+    result += '♂ '
   }
 
-  const isPokemonGenderless = () => {
-    return genderlessList.filter(item => item.pokemon_species.name === name).length > 0
-  }
-
-  if (isPokemonGenderless()){
+  if (result === '') {
     result = 'Genderless'
-  }
-  else {
-    if (isPokemonFemale()){
-      result += '♀ '
-    }
-
-    if (isPokemonMale()){
-      result += '♂ '
-    }
   }
 
   return result

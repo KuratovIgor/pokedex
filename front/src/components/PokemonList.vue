@@ -74,7 +74,6 @@ export default defineComponent({
   &__card-list {
     display: flex;
     flex-wrap: wrap;
-    max-width: 1100px;
   }
 
   &__card {

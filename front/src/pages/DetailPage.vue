@@ -51,7 +51,7 @@ export default defineComponent({
 
     const route = useRoute()
 
-    onBeforeRouteUpdate(async (to) => {
+    onBeforeRouteUpdate(async (to): Promise<void> => {
       await getPokemonDetail(Number(to.params.id))
     })
 
@@ -66,7 +66,7 @@ export default defineComponent({
       loading.value = false
     }
 
-    onMounted(() => {
+    onMounted((): void => {
       getPokemonDetail(Number(route.params.id))
     })
 

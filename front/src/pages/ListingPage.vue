@@ -30,7 +30,7 @@ export default defineComponent({
     let totalPages = ref<number>()
     let pokemonList = ref<PokemonType[]>([])
 
-    const getPokemonList = async (offset: number) => {
+    const getPokemonList = async (offset: number): Promise<void> => {
       loading.value = true
 
       const [error, data] = await pokemonAPI.getPokemonList(offset)
@@ -48,7 +48,7 @@ export default defineComponent({
       submitPokemonToHistory(pokemon)
     }
 
-    onMounted(() => {
+    onMounted((): void => {
       getPokemonList(0)
     })
 
@@ -67,5 +67,6 @@ export default defineComponent({
 <style lang="scss" scoped>
 .listing-page {
   min-width: 1000px;
+  max-width: 1300px;
 }
 </style>

@@ -1,6 +1,6 @@
 import { Static, Type } from '@sinclair/typebox'
 import { FastifyInstance } from 'fastify/types/instance'
-import { AbilityMapper } from '../../mappers/abilityMapper'
+import { AbilityMapper } from '~/plugins/mappers/abilityMapper'
 
 const AbilitySchema = Type.Object({
   name: Type.String(),

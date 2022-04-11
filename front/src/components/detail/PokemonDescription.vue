@@ -10,11 +10,11 @@
       <div class="about-pokemon__left-column">
         <div class="about-pokemon__item">
           <div class="about-pokemon__item-title">Height</div>
-          <div class="about-pokemon__item-value">{{ pokemon.height }}</div>
+          <div class="about-pokemon__item-value">{{ pokemon.height }} M</div>
         </div>
         <div class="about-pokemon__item">
           <div class="about-pokemon__item-title">Weight</div>
-          <div class="about-pokemon__item-value">{{ pokemon.weight }}</div>
+          <div class="about-pokemon__item-value">{{ pokemon.weight }} Kg</div>
         </div>
         <div class="about-pokemon__item">
           <div class="about-pokemon__item-title">Gender</div>
@@ -105,7 +105,7 @@ export default defineComponent({
 
   &__about-pokemon {
     margin-bottom: 20px;
-    border: 1px solid #000;
+    border: 1px solid $color-black;
     border-radius: 10px;
     background-color: $color-blue;
   }
