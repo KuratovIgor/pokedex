@@ -6,6 +6,10 @@
     element-loading-background="rgba(0, 0, 0, 0.6)"
   >
     <template v-if="pokemonDetail">
+      <pokemon-pagination
+        :id="pokemonDetail.id"
+        class="detail-page__pagination"
+      />
       <div class="detail-page__title">
         <div class="detail-page__title-name">{{ pokemonDetail.name }}</div>
         <div class="detail-page__title-number">{{ idString }}</div>
@@ -33,15 +37,25 @@
 import PokemonDescription from '@/components/detail/PokemonDescription.vue'
 import PokemonStats from '@/components/detail/PokemonStats.vue'
 import PokemonEvolution from '@/components/detail/PokemonEvolution.vue'
+import PokemonPagination from '@/components/detail/PokemonPagination.vue'
 import { defineComponent, ref, onMounted, watch } from 'vue'
 import { pokemonAPI } from '@/api/pokemon.api'
 import { onBeforeRouteUpdate, useRoute } from 'vue-router'
-import { EvolutionType, PokemonDetailType } from '@/types/pokemonType'
-import { idToString } from '../utils'
+import {
+  EvolutionType,
+  PokemonDetailType,
+  PokemonType,
+} from '@/types/pokemonType'
+import { idToString, submitPokemonToHistory } from '../utils'
 
 export default defineComponent({
   name: 'DetailPage',
-  components: { PokemonEvolution, PokemonDescription, PokemonStats },
+  components: {
+    PokemonEvolution,
+    PokemonDescription,
+    PokemonStats,
+    PokemonPagination,
+  },
 
   setup() {
     const loading = ref(false)
@@ -53,6 +67,15 @@ export default defineComponent({
 
     onBeforeRouteUpdate(async (to): Promise<void> => {
       await getPokemonDetail(Number(to.params.id))
+
+      const pokemon: PokemonType = {
+        image: pokemonDetail.value.image,
+        name: pokemonDetail.value.name,
+        id: pokemonDetail.value.id,
+        types: pokemonDetail.value.types,
+      }
+
+      submitPokemonToHistory(pokemon)
     })
 
     const getPokemonDetail = async (id: number): Promise<void> => {
@@ -86,6 +109,10 @@ export default defineComponent({
   flex-direction: column;
   margin-left: 50px;
   min-width: 1000px;
+
+  &__pagination {
+    align-self: center;
+  }
 
   &__title {
     display: flex;

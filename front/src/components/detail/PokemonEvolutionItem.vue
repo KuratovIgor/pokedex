@@ -1,10 +1,7 @@
 <template>
   <div class="pokemon-evolution-item">
     <router-link :to="`/detail-page/${pokemon.id}`">
-      <img
-        :src="pokemon.image"
-        @click="handleSubmitPokemonToHistory(pokemon)"
-      />
+      <img :src="pokemon.image" />
     </router-link>
     <div class="pokemon-evolution-item__info">
       <div class="pokemon-evolution-item__title">
@@ -29,10 +26,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, ref } from 'vue'
-import { useRoute } from 'vue-router'
+import { defineComponent, PropType } from 'vue'
 import { PokemonType } from '@/types/pokemonType'
-import { idToString, submitPokemonToHistory } from '@/utils'
+import { idToString } from '@/utils'
 
 export default defineComponent({
   name: 'PokemonEvolutionItem',
@@ -42,17 +38,8 @@ export default defineComponent({
   },
 
   setup() {
-    const route = useRoute()
-
-    const handleSubmitPokemonToHistory = (pokemon: PokemonType): void => {
-      if (pokemon.id !== Number(route.params.id)) {
-        submitPokemonToHistory(pokemon)
-      }
-    }
-
     return {
       idToString,
-      handleSubmitPokemonToHistory,
     }
   },
 })
