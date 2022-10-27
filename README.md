@@ -1,6 +1,7 @@
 # POKEDEX
 
 ### Before started:
+  - Use node version 14.19.0
   - Open front
   - Create .env file
   - Add to .env `VUE_APP_BASE_URI=http://127.0.0.1:3000`
