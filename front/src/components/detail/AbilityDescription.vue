@@ -27,7 +27,7 @@
 <script lang="ts">
 import { defineComponent, onMounted, ref } from 'vue'
 import { pokemonAPI } from '@/api/pokemon.api'
-import { AbilityType } from '@/types/PokemonType'
+import { AbilityType } from '@/types/pokemonType'
 
 export default defineComponent({
   name: 'AbilityDescription',

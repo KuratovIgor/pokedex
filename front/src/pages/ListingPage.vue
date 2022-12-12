@@ -16,7 +16,7 @@
 import { defineComponent, ref, onMounted } from 'vue'
 import PokemonList from '@/components/PokemonList.vue'
 import SidebarHistory from '@/components/SidebarHistory.vue'
-import { PaginationType, PokemonType } from '@/types/PokemonType'
+import { PaginationType, PokemonType } from '@/types/pokemonType'
 import { pokemonAPI } from '@/api/pokemon.api'
 import { submitPokemonToHistory } from '@/utils'
 

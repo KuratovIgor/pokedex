@@ -25,7 +25,7 @@
 <script lang="ts">
 import PokemonCard from '@/components/PokemonCard.vue'
 import { defineComponent, ref, PropType } from 'vue'
-import { PokemonType } from '@/types/PokemonType'
+import { PokemonType } from '@/types/pokemonType'
 
 export default defineComponent({
   name: 'PokemonList',

@@ -74,7 +74,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType, ref } from 'vue'
-import { StatType } from '@/types/PokemonType'
+import { StatType } from '@/types/pokemonType'
 
 export default defineComponent({
   name: 'PokemonStats',

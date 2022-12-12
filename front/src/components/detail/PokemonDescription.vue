@@ -62,7 +62,7 @@
 
 <script lang="ts">
 import { defineAsyncComponent, defineComponent, PropType, ref } from 'vue'
-import { PokemonDetailType } from '@/types/PokemonType'
+import { PokemonDetailType } from '@/types/pokemonType'
 
 const AbilityDescription = defineAsyncComponent(
   () => import('./AbilityDescription.vue')

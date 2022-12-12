@@ -1,7 +1,7 @@
 import { FastifyInstance } from 'fastify'
 import { Static, Type } from '@sinclair/typebox'
-import { PokemonMapper } from '~/plugins/mappers/PokemonMapper'
-import type { PokemonType } from '~/plugins/mappers/PokemonMapper'
+import { PokemonMapper } from '~/plugins/mappers/pokemonMapper'
+import type { PokemonType } from '~/plugins/mappers/pokemonMapper'
 
 const PaginationSchema = Type.Object({
   total: Type.Number(),
@@ -59,6 +59,9 @@ const pokemonListRoute = (fastify: FastifyInstance) => {
           req.query.offset,
           req.query.limit
         )
+
+        repl.header('Access-Control-Allow-Origin', 'http://localhost:3000')
+        repl.header('Access-Control-Allow-Credentials', 'true')
 
         await repl.send({
           pokemon: newPokemonList,

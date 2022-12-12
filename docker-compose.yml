@@ -1,0 +1,11 @@
+version: "3.8"
+
+services:
+  pokedex-bff:
+    build: "./bff"
+    ports:
+      - "49160:8080"
+  pokedex-front:
+    build: "./front"
+    ports:
+      - "3000:80"

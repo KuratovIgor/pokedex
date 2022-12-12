@@ -11,7 +11,7 @@ app.register(axiosPlugin, {
   timeout: 30000
 })
 
-app.listen(3000, (err, address) => {
+app.listen(8080, '0.0.0.0', (err, address) => {
   if (err) {
     app.log.error(err)
   }

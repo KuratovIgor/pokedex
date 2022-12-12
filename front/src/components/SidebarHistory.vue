@@ -17,7 +17,7 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
 import PokemonCard from '@/components/PokemonCard.vue'
-import { PokemonType } from '@/types/PokemonType'
+import { PokemonType } from '@/types/pokemonType'
 import { getHistoryFromLocalStorage } from '@/utils'
 
 export default defineComponent({
