@@ -11,12 +11,14 @@
     - `cd bff`
     - `npm ci`
     - `npm run dev`
-    - for fix files `npm run eslint:fix`
   - Execute commands for run app:
     - `cd front`
     - `npm ci`
     - `npm run serve`
   - Optional:
     - compiles and minifies for production `npm run build`
-    - lints and fixes files `npm run lint`
+    
+### Run via docker
+  - open root directory
+  - run `docker-compose up`
 
