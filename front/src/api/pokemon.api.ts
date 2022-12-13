@@ -37,5 +37,5 @@ export const pokemonAPI = new PokemonAPI({
     process.env.NODE_ENV === 'production'
       ? `${process.env.VUE_APP_BASE_URI}`
       : '',
-  withCredentials: true,
+  withCredentials: false,
 })
