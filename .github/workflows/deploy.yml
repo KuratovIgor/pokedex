@@ -9,7 +9,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: pull, build & run
+      - name: deploy
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.HOST }}
@@ -18,6 +18,15 @@ jobs:
           port: ${{ secrets.PORT }}
           script: |
             docker stop pokedex-bff
+            docker stop pokedex-front
+            docker rm pokedex-front
+            docker rm pokedex-bff
+            docker rmi kuratovia/pokedex-bff
+            docker rmi kuratovia/pokedex-front
+            docker pull kuratovia/pokedex-bff
+            docker pull kuratovia/pokedex-front
+            docker run -d -p 49160:8080 --name=pokedex-bff kuratovia/pokedex-bff
+            docker run -d -p 80:80 --name=pokedex-front kuratovia/pokedex-front
 
 
 
