@@ -83,8 +83,7 @@ const pokemonRoute = (fastify: FastifyInstance) => {
             evolutionChain,
           )
 
-          repl.header('Access-Control-Allow-Origin', 'http://localhost:3000')
-          repl.header('Access-Control-Allow-Credentials', 'true')
+          repl.header('Access-Control-Allow-Origin', '*')
 
           await repl.send({
             pokemon: detailInfo

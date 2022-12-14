@@ -38,8 +38,7 @@ const abilityRoute = (fastify: FastifyInstance) => {
 
           const abilityInfo = AbilityMapper.mapAbilityInfoToFrontend(abilityFromApi.data)
 
-          repl.header('Access-Control-Allow-Origin', 'http://localhost:3000')
-          repl.header('Access-Control-Allow-Credentials', 'true')
+          repl.header('Access-Control-Allow-Origin', '*')
 
           await repl.send({
             ability: abilityInfo
