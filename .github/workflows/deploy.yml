@@ -2,20 +2,22 @@ name: Deploy
 
 on:
   push:
-    branches: [main]
+    branches:
+      - master
 
 jobs:
-  lint:
+  deploy:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [16.11.0]
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
+      - name: pull, build & run
+        uses: appleboy/ssh-action@master
         with:
-          node-version: ${{ matrix.node-version }}
-      - run:
-          npm ci
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
+          port: ${{ secrets.PORT }}
+          script: |
+            docker stop pokedex-bff
+
 
 
