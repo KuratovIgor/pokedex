@@ -4,7 +4,7 @@
   - Use node version 14.19.0
   - Open front
   - Create .env file
-  - Add to .env `VUE_APP_BASE_URI=http://localhost:49160`
+  - Add to .env `VUE_APP_BASE_URI=http://45.141.78.112:49160`
 ### Run project:
   - Open cmd
   - Execute commands for run server:
