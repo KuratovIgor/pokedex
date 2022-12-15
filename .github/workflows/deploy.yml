@@ -24,7 +24,7 @@ jobs:
           context: ./bff
           file: ./bff/Dockerfile
           push: true
-          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/pokedex-bf
+          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/pokedex-bff
       - name: Build and push front container
         uses: docker/build-push-action@v3
         with:
