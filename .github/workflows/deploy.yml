@@ -21,15 +21,15 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v3
         with:
-          context: .
-          file: ./bff/Dockerfile
+          context: ./bff
+          file: Dockerfile
           push: true
           tags: ${{ secrets.DOCKER_HUB_USERNAME }}/pokedex-bff
       - name: Build and push
         uses: docker/build-push-action@v3
         with:
-          context: .
-          file: ./front/Dockerfile
+          context: ./front
+          file: Dockerfile
           push: true
           tags: ${{ secrets.DOCKER_HUB_USERNAME }}/pokedex-front
 
