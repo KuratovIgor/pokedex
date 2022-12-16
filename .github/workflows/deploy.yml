@@ -6,6 +6,15 @@ on:
       - main
 
 jobs:
+  create-env:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create .env file
+        uses: SpicyPizza/create-envfile@v1.3.0
+        with:
+          envkey_VUE_APP_BASE_URI: ${{ secrets.ENV_KEY }}
+          directory: ./front
+
   build-and-deploy:
     runs-on: ubuntu-latest
     steps:
