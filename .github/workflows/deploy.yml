@@ -11,10 +11,10 @@ jobs:
     steps:
       - name: Create .env file
         uses: SpicyPizza/create-envfile@v1.3.0
-        inputs:
+        with:
           envkey_VUE_APP_BASE_URI: ${{ secrets.ENV_KEY }}
           directory: ./front
-
+          filename: .env
 
   build-and-deploy:
     runs-on: ubuntu-latest
