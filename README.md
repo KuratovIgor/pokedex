@@ -1,4 +1,5 @@
 # POKEDEX
+http://pokedex.kuratovia.ru/
 
 ### Before started:
   - Use node version 14.19.0
