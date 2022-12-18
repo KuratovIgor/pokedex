@@ -12,7 +12,7 @@ class PokemonAPI extends AxiosService {
       url: '/api/pokemon',
       params: {
         offset: offset,
-        limit: 10,
+        limit: 12,
       },
     })
   }

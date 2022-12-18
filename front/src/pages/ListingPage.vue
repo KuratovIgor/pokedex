@@ -1,13 +1,16 @@
 <template>
-  <div class="listing-page">
+  <div
+    v-loading.body="loading"
+    element-loading-text="Loading..."
+    element-loading-background="()"
+    class="listing-page"
+  >
     <pokemon-list
-      v-loading="loading"
-      element-loading-text="Loading..."
-      element-loading-background="rgba(0, 0, 0, 0.6)"
       :pokemon-list="pokemonList"
       :total-pages="totalPages"
       @on-submit-to-history="handleSubmitPokemonToHistory"
       @on-change-page="handleChangePage"
+      @click="handleChoosePokemon"
     />
   </div>
 </template>
@@ -15,16 +18,18 @@
 <script lang="ts">
 import { defineComponent, ref, onMounted } from 'vue'
 import PokemonList from '@/components/PokemonList.vue'
-import SidebarHistory from '@/components/SidebarHistory.vue'
 import { PaginationType, PokemonType } from '@/types/pokemonType'
 import { pokemonAPI } from '@/api/pokemon.api'
 import { submitPokemonToHistory } from '@/utils'
+import { useStorage } from '@/composable/storage'
 
 export default defineComponent({
   name: 'ListingPage',
-  components: { SidebarHistory, PokemonList },
+  components: { PokemonList },
 
   setup() {
+    const { setIsStorageUpdated } = useStorage()
+
     const loading = ref(true)
 
     let totalPages = ref<number>()
@@ -33,11 +38,16 @@ export default defineComponent({
     const getPokemonList = async (offset: number): Promise<void> => {
       loading.value = true
 
-      const [error, data] = await pokemonAPI.getPokemonList(offset)
+      const [_, data] = await pokemonAPI.getPokemonList(offset)
 
-      loading.value = false
       totalPages.value = data.paginationInfo.total
       pokemonList.value = data.pokemon
+
+      loading.value = false
+    }
+
+    const handleChoosePokemon = () => {
+      setIsStorageUpdated(true)
     }
 
     const handleChangePage = (pagination: PaginationType): void => {
@@ -57,6 +67,7 @@ export default defineComponent({
       totalPages,
       pokemonList,
       getPokemonList,
+      handleChoosePokemon,
       handleSubmitPokemonToHistory,
       handleChangePage,
     }
@@ -66,7 +77,16 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .listing-page {
-  min-width: 1000px;
-  max-width: 1300px;
+  overflow-y: auto;
+  padding: 20px 100px;
+  height: 100%;
+
+  @media (max-width: 900px) {
+    padding: 20px 40px;
+  }
+
+  @media (max-width: 600px) {
+    padding: 20px 10px;
+  }
 }
 </style>

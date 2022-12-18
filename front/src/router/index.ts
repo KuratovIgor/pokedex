@@ -13,12 +13,12 @@ const routes: Array<RouteRecordRaw> = [
     },
     children: [
       {
-        path: '/listing-page',
+        path: '/pokemon',
         name: 'ListingPage',
         component: ListingPage,
       },
       {
-        path: '/detail-page/:id',
+        path: '/pokemon/:id',
         name: 'DetailPage',
         component: DetailPage,
       },

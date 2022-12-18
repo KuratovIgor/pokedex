@@ -3,26 +3,23 @@
     <div class="footer__contacts">
       <a href="#">
         <icon-template
-          width="40"
-          height="40"
+          :width="$screen.size === 'xs' ? 30 : 40"
+          :height="$screen.size === 'xs' ? 30 : 40"
           name="telegram"
-          class="footer__contacts-item"
         />
       </a>
       <a href="#">
         <icon-template
-          width="40"
-          height="40"
+          :width="$screen.size === 'xs' ? 30 : 40"
+          :height="$screen.size === 'xs' ? 30 : 40"
           name="whatsapp"
-          class="footer__contacts-item"
         />
       </a>
       <a href="#">
         <icon-template
-          width="40"
-          height="40"
+          :width="$screen.size === 'xs' ? 30 : 40"
+          :height="$screen.size === 'xs' ? 30 : 40"
           name="instagram"
-          class="footer__contacts-item"
         />
       </a>
     </div>
@@ -41,18 +38,20 @@ export default defineComponent({
 .footer {
   display: flex;
   justify-content: right;
-  height: 120px;
-  background: url('../../assets/images/footer-image.png') 0 0 no-repeat;
+  border-radius: 20px 20px 0 0;
+  padding: 10px 50px;
+  box-shadow: 0 3px 20px $color-black;
+  background-color: #f9b81e;
 
   &__contacts {
     display: flex;
     align-items: center;
     justify-content: space-around;
     width: 200px;
+  }
 
-    &-item {
-      margin-top: 50px;
-    }
+  @media (max-width: 600px) {
+    padding: 10px 20px;
   }
 }
 </style>

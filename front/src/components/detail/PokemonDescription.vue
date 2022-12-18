@@ -7,7 +7,7 @@
       @on-close-click="handleCloseDescription"
     />
     <div v-else class="pokemon-description__about-pokemon about-pokemon">
-      <div class="about-pokemon__left-column">
+      <div>
         <div class="about-pokemon__item">
           <div class="about-pokemon__item-title">Height</div>
           <div class="about-pokemon__item-value">{{ pokemon.height }} M</div>
@@ -21,7 +21,7 @@
           <div class="about-pokemon__item-value">{{ pokemon.gender }}</div>
         </div>
       </div>
-      <div class="about-pokemon__right-column">
+      <div>
         <div class="about-pokemon__item">
           <div class="about-pokemon__item-title">Category</div>
           <div class="about-pokemon__item-value">{{ pokemon.category }}</div>
@@ -101,20 +101,23 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .pokemon-description {
-  width: 500px;
+  width: 100%;
+  max-width: 500px;
 
   &__about-pokemon {
     margin-bottom: 20px;
     border: 1px solid $color-black;
     border-radius: 10px;
     background-color: $color-blue;
+
+    @media (max-width: 760px) {
+      margin-bottom: 10px;
+    }
   }
 
   &__type {
     margin-bottom: 10px;
-    width: 500px;
     height: 70px;
-    font-size: 20px;
 
     &-title {
       margin-bottom: 10px;
@@ -128,23 +131,23 @@ export default defineComponent({
       display: flex;
       align-items: center;
       justify-content: center;
-      margin: 0 5px 5px 0;
+      margin-right: 5px;
       border: 1px solid $color-black;
       border-radius: 5px;
       width: 100px;
       height: 30px;
     }
   }
+
+  @media (max-width: 450px) {
+    font-size: 16px;
+  }
 }
 
 .about-pokemon {
   display: flex;
   justify-content: space-between;
-  padding: 15px;
-
-  &__right-column {
-    margin-right: 100px;
-  }
+  padding: 15px 100px 15px 15px;
 
   &__item {
     margin-bottom: 15px;
@@ -152,10 +155,6 @@ export default defineComponent({
     &-title {
       margin-bottom: 10px;
       color: $color-white;
-    }
-
-    &-value {
-      font-size: 20px;
     }
 
     &-abilities {
@@ -173,6 +172,10 @@ export default defineComponent({
         transition: 0.1s linear;
       }
     }
+  }
+
+  @media (max-width: 900px) {
+    padding: 10px 70px 10px 10px;
   }
 }
 </style>

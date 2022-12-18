@@ -95,8 +95,9 @@ export default defineComponent({
 .pokemon-stats {
   border: 1px solid $color-black;
   border-radius: 10px;
-  width: 450px;
+  width: 100%;
   height: 270px;
+  max-width: 450px;
   background-color: #a4a4a4;
 
   &__title {
@@ -105,27 +106,26 @@ export default defineComponent({
 
   &__stat {
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     margin: 10px;
   }
 
   &__column {
     margin-right: 10px;
-    width: 60px;
-    height: 10px;
+    width: 100%;
+    max-width: 60px;
   }
 
   &__row {
     margin-bottom: 3px;
     border: 1px solid $color-black;
-    width: 60px;
+    width: 100%;
     height: 10px;
     background-color: $color-white;
 
     &-fill {
       margin-bottom: 3px;
       border: 1px solid $color-black;
-      width: 60px;
       height: 10px;
       background-color: $color-blue;
     }
@@ -133,7 +133,15 @@ export default defineComponent({
     &-name {
       font-size: 13px;
       text-align: center;
+
+      @media (max-width: 550px) {
+        font-size: 10px;
+      }
     }
+  }
+
+  @media (max-width: 820px) {
+    max-width: 500px;
   }
 }
 </style>

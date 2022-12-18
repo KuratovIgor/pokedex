@@ -1,0 +1,17 @@
+.el-card {
+  border-radius: 15px;
+
+  &__header {
+    @media (max-width: 900px) {
+      padding: 12px;
+    }
+  }
+
+  &__body {
+    padding: 0 20px 20px;
+
+    @media (max-width: 900px) {
+      padding: 0 10px 10px;
+    }
+  }
+}

@@ -1,0 +1,11 @@
+.el-drawer {
+  overflow: auto;
+
+  &__body {
+    display: flex;
+    flex: none;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    padding: 0 40px;
+  }
+}

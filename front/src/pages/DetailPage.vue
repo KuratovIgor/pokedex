@@ -1,9 +1,8 @@
 <template>
   <div
     class="detail-page"
-    v-loading="loading"
+    v-loading.body="loading"
     element-loading-text="Loading..."
-    element-loading-background="rgba(0, 0, 0, 0.6)"
   >
     <template v-if="pokemonDetail">
       <div class="detail-page__title">
@@ -58,7 +57,7 @@ export default defineComponent({
     const getPokemonDetail = async (id: number): Promise<void> => {
       loading.value = true
 
-      const [error, data] = await pokemonAPI.getPokemonDelail(id)
+      const [_, data] = await pokemonAPI.getPokemonDelail(id)
       pokemonDetail.value = data.pokemon.pokemonInfo
       pokemonEvolution.value = data.pokemon.evolution
       idString.value = idToString(pokemonDetail.value.id)
@@ -84,14 +83,15 @@ export default defineComponent({
 .detail-page {
   display: flex;
   flex-direction: column;
-  margin-left: 50px;
-  min-width: 1000px;
+  overflow-y: auto;
+  padding: 20px 50px;
+  width: 100%;
+  height: 100%;
 
   &__title {
     display: flex;
     justify-content: center;
     margin-bottom: 50px;
-    font-family: 'Arial';
     font-size: 30px;
 
     &-name {
@@ -101,34 +101,70 @@ export default defineComponent({
     &-number {
       color: $id-color;
     }
+
+    @media (max-width: 820px) {
+      margin-bottom: 30px;
+    }
+  }
+
+  @media (max-width: 820px) {
+    align-items: center;
+  }
+
+  @media (max-width: 760px) {
+    padding: 10px 30px;
   }
 }
 
 .pokemon-info {
   display: flex;
   flex-direction: column;
+  width: 100%;
 
   &__detail {
     display: flex;
     margin-bottom: 20px;
+    width: 100%;
+
+    @media (max-width: 820px) {
+      flex-direction: column;
+      align-items: center;
+    }
   }
 
   &__image {
+    min-width: 320px;
+    max-width: 450px;
+    max-height: 450px;
+
     img {
       border: 1px solid $color-black;
       border-radius: 15px;
-      width: 450px;
-      height: 450px;
+      width: 100%;
+      height: 100%;
       background-color: $card-color;
+    }
+
+    @media (max-width: 820px) {
+      margin-bottom: 20px;
+      min-width: 250px;
     }
   }
 
   &__description {
     margin-left: 30px;
+
+    @media (max-width: 820px) {
+      margin: 0;
+    }
   }
 
   &__stats {
     margin-bottom: 20px;
+  }
+
+  @media (max-width: 820px) {
+    align-items: center;
   }
 }
 </style>

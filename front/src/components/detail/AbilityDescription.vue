@@ -72,8 +72,8 @@ export default defineComponent({
   margin-bottom: 20px;
   border: 1px solid $color-black;
   border-radius: 10px;
-  width: 500px;
   height: 215px;
+  max-width: 500px;
   background-color: #313131;
 
   &__header {
@@ -109,6 +109,10 @@ export default defineComponent({
     margin-bottom: 10px;
     font-size: 30px;
     color: $color-white;
+
+    @media (max-width: 450px) {
+      font-size: 20px;
+    }
   }
 
   &__text {
@@ -118,6 +122,10 @@ export default defineComponent({
     font-size: 15px;
     letter-spacing: 1px;
     color: $color-white;
+
+    @media (max-width: 450px) {
+      font-size: 12px;
+    }
 
     &::-webkit-scrollbar {
       border-radius: 20px;

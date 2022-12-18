@@ -1,15 +1,14 @@
 <template>
-  <div class="pokemon-card">
-    <router-link :to="`/detail-page/${id}`">
-      <img
-        class="pokemon-card__image"
-        :src="image"
-        @click="handleSubmitToHistory"
-      />
-    </router-link>
-    <div class="pokemon-info">
-      <p class="pokemon-info__number">{{ idString }}</p>
+  <el-card class="pokemon-card" shadow="hover">
+    <template #header>
       <h3 class="pokemon-info__name">{{ name }}</h3>
+    </template>
+    <img
+      class="pokemon-card__image"
+      :src="image"
+      @click="handleSubmitToHistory"
+    />
+    <div class="pokemon-info">
       <ul class="pokemon-types">
         <li
           v-for="type in types"
@@ -20,7 +19,7 @@
         </li>
       </ul>
     </div>
-  </div>
+  </el-card>
 </template>
 
 <script lang="ts">
@@ -51,8 +50,8 @@ export default defineComponent({
     }
 
     return {
-      handleSubmitToHistory,
       idString,
+      handleSubmitToHistory,
     }
   },
 })
@@ -60,38 +59,35 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .pokemon-card {
-  max-width: 170px;
-  font-family: 'Arial';
+  width: 100%;
+  max-width: 220px;
 
   &__image {
     margin-bottom: 10px;
-    border: 1px solid $color-black;
-    border-radius: 10%;
-    width: 170px;
-    height: 170px;
-    box-shadow: 2px 2px 10px $color-black;
-    background: $card-color;
+    width: 178px;
+    height: 178px;
+
+    @media (max-width: 900px) {
+      width: 120px;
+      height: 120px;
+    }
   }
 
   .pokemon-info {
     display: flex;
     flex-direction: column;
-    padding-left: 10px;
-
-    &__number {
-      margin-bottom: 10px;
-      font-size: 12px;
-      color: $id-color;
-    }
 
     &__name {
-      margin-bottom: 5px;
       font-weight: 700;
+
+      @media (max-width: 900px) {
+        font-size: 16px;
+      }
     }
   }
 
-  &:hover {
-    animation: pokemon-hover 0.5s linear;
+  @media (max-width: 900px) {
+    max-width: 150px;
   }
 }
 
@@ -104,17 +100,21 @@ export default defineComponent({
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: 0 5px 5px 0;
+    margin-right: 5px;
     border: 1px solid $color-black;
     border-radius: 5px;
     width: 70px;
     height: 25px;
   }
-}
 
-@keyframes pokemon-hover {
-  50% {
-    transform: translateY(-5px);
+  @media (max-width: 900px) {
+    font-size: 12px;
+
+    &__item {
+      border-radius: 5px;
+      width: 50px;
+      height: 20px;
+    }
   }
 }
 </style>

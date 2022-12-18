@@ -123,7 +123,7 @@ export default defineComponent({
 .pokemon-evolution {
   border: 1px solid $color-black;
   border-radius: 10px 10px 10px 50px;
-  width: 1000px;
+  width: 100%;
   background: url('../../assets/images/evolution_bg.png');
 
   &__title {
@@ -151,6 +151,10 @@ export default defineComponent({
     align-self: center;
     justify-content: center;
     margin: 10px;
+
+    @media (max-width: 600px) {
+      margin: 5px;
+    }
   }
 
   &__pokemon-info {
@@ -163,7 +167,7 @@ export default defineComponent({
   &__arrows {
     display: flex;
     flex-direction: column;
-    margin: 70px 0 130px;
+    padding-bottom: 10px;
   }
 
   &__arrow {
@@ -175,6 +179,18 @@ export default defineComponent({
     width: 30px;
     height: 30px;
     transform: rotateZ(45deg);
+
+    @media (max-width: 1200px) {
+      margin: 0;
+      border: 2px solid $color-white;
+      border-bottom: hidden;
+      border-left: hidden;
+    }
+
+    @media (max-width: 820px) {
+      width: 15px;
+      height: 15px;
+    }
   }
 }
 

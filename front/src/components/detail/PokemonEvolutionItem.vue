@@ -1,6 +1,6 @@
 <template>
   <div class="pokemon-evolution-item">
-    <router-link :to="`/detail-page/${pokemon.id}`">
+    <router-link :to="`/pokemon/${pokemon.id}`">
       <img
         :src="pokemon.image"
         @click="handleSubmitPokemonToHistory(pokemon)"
@@ -80,6 +80,25 @@ export default defineComponent({
       transform: scale(1.05);
       transition: 0.1s linear;
     }
+
+    @media (max-width: 1200px) {
+      border: 2px solid $color-white;
+    }
+
+    @media (max-width: 1000px) {
+      width: 90px;
+      height: 90px;
+    }
+
+    @media (max-width: 600px) {
+      width: 60px;
+      height: 60px;
+    }
+
+    @media (max-width: 450px) {
+      width: 40px;
+      height: 40px;
+    }
   }
 
   &__info {
@@ -93,6 +112,15 @@ export default defineComponent({
     display: flex;
     margin-bottom: 10px;
     font-size: 20px;
+
+    @media (max-width: 820px) {
+      font-size: 12px;
+    }
+
+    @media (max-width: 600px) {
+      flex-direction: column;
+      font-size: 10px;
+    }
   }
 
   &__name {
@@ -107,6 +135,14 @@ export default defineComponent({
   &__types {
     display: flex;
     font-size: 17px;
+
+    @media (max-width: 820px) {
+      font-size: 10px;
+    }
+
+    @media (max-width: 600px) {
+      display: none;
+    }
   }
 
   &__type {
@@ -118,6 +154,11 @@ export default defineComponent({
     border-radius: 5px;
     width: 70px;
     height: 25px;
+
+    @media (max-width: 820px) {
+      width: 50px;
+      height: 20px;
+    }
   }
 }
 </style>
