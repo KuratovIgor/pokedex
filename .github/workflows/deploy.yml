@@ -19,8 +19,11 @@ jobs:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_PASSWORD }}
 
-      - name: Copy .env
-        run: cp $dev ./front/.env
+      - name: Create .env file
+        uses: SpicyPizza/create-envfile@v1.3.0
+        with:
+          envkey_VUE_APP_BASE_URI: ${{ vars.VUE_APP_BASE_URI }}
+          directory: ./front
 
       - name: Build front image
         run: docker build -f ./front/Dockerfile . -t ${{ secrets.DOCKER_HUB_USERNAME }}/pokedex-front
