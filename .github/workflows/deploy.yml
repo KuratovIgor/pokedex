@@ -22,7 +22,7 @@ jobs:
       - name: Create .env file
         uses: SpicyPizza/create-envfile@v1.3.0
         with:
-          envkey_VUE_APP_BASE_URI: ${{ vars.VUE_APP_BASE_URI }}
+          envkey_VUE_APP_BASE_URI: ${{ var.ENV_KEY }}
           directory: ./front
 
       - name: Build front image
