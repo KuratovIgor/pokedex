@@ -1,11 +1,13 @@
 version: "3.8"
 
 services:
-  pokedex-bff:
-    build: "./bff"
+  bff:
+    image: "kuratovia/pokedex-bff"
+    restart: unless-stopped
     ports:
       - "49160:8080"
-  pokedex-front:
-    build: "./front"
+  front:
+    image: "kuratovia/pokedex-front"
+    restart: unless-stopped
     ports:
-      - "3000:80"
+      - "8080:8080"

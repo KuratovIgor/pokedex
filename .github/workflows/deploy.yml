@@ -6,39 +6,36 @@ on:
       - main
 
 jobs:
-  build-and-deploy:
+  build:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+
       - name: Login to Docker Hub
         uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_PASSWORD }}
 
-      - name: Create .env file
-        uses: SpicyPizza/create-envfile@v1.3.0
-        with:
-          envkey_VUE_APP_BASE_URI: ${{ secrets.ENV_KEY }}
-          directory: ./front
+      - name: Copy .env
+        run: cp $dev ./front/.env
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
-      - name: Build and push bff container
-        uses: docker/build-push-action@v3
-        with:
-          context: ./bff
-          file: ./bff/Dockerfile
-          push: true
-          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/pokedex-bff
-      - name: Build and push front container
-        uses: docker/build-push-action@v3
-        with:
-          context: ./front
-          file: ./front/Dockerfile
-          push: true
-          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/pokedex-front
+      - name: Build front image
+        run: docker build -f ./front/Dockerfile . -t ${{ secrets.DOCKER_HUB_USERNAME }}/pokedex-front
+      - name: Build bff image
+        run: docker build -f ./bff/Dockerfile . -t ${{ secrets.DOCKER_HUB_USERNAME }}/pokedex-bff
+      - name: Push front image
+        run: docker push ${{ secrets.DOCKER_HUB_USERNAME }}/pokedex-front
+      - name: Push bff image
+        run: docker push ${{ secrets.DOCKER_HUB_USERNAME }}/pokedex-bff
+      
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build_and_push
+
+    steps:
       - name: deploy
         uses: appleboy/ssh-action@master
         with:
@@ -47,14 +44,5 @@ jobs:
           password: ${{ secrets.PASSWORD }}
           port: ${{ secrets.PORT }}
           script: |
-            docker stop pokedex-bff
-            docker stop pokedex-front
-            docker rm pokedex-front
-            docker rm pokedex-bff
-            docker rmi kuratovia/pokedex-bff
-            docker rmi kuratovia/pokedex-front
-            docker pull kuratovia/pokedex-bff
-            docker pull kuratovia/pokedex-front
-            docker run -d -p 49160:8080 --name=pokedex-bff kuratovia/pokedex-bff
-            docker run -d -p 80:80 --name=pokedex-front kuratovia/pokedex-front
-      
+            mv -f docker-compose.yml docker-compose.yml
+            docker-compose up
