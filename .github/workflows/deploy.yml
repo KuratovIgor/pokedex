@@ -39,6 +39,15 @@ jobs:
     needs: build
 
     steps:
+      - name: Copy docker.compose.yml to server
+        uses: garygrossgarten/github-action-scp@release
+        with:
+          local: docker-compose.yml
+          remote: docker-compose.yml
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
+
       - name: deploy
         uses: appleboy/ssh-action@master
         with:
@@ -46,6 +55,6 @@ jobs:
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}
           port: ${{ secrets.PORT }}
+          run: mv -f docker-compose.yml
           script: |
-            mv -f docker-compose.yml docker-compose.yml
             docker-compose up
