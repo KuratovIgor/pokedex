@@ -26,9 +26,9 @@ jobs:
           directory: ./front
 
       - name: Build front image
-        run: docker build -f ./front/Dockerfile . -t ${{ secrets.DOCKER_HUB_USERNAME }}/pokedex-front
+        run: docker build -f ./front/Dockerfile ./front -t ${{ secrets.DOCKER_HUB_USERNAME }}/pokedex-front
       - name: Build bff image
-        run: docker build -f ./bff/Dockerfile . -t ${{ secrets.DOCKER_HUB_USERNAME }}/pokedex-bff
+        run: docker build -f ./bff/Dockerfile ./bff -t ${{ secrets.DOCKER_HUB_USERNAME }}/pokedex-bff
       - name: Push front image
         run: docker push ${{ secrets.DOCKER_HUB_USERNAME }}/pokedex-front
       - name: Push bff image
