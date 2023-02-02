@@ -28,6 +28,7 @@ jobs:
       - name: Copy docker-compose
         run: |
           mkdir test
+          touch test/docker-compose.yml
           cp docker-compose.yml /test/docker-compose.yml
 
       - name: Build and push images
