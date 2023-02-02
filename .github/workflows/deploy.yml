@@ -29,13 +29,6 @@ jobs:
         run: |
           mkdir test
           cp docker-compose.yml ./test/docker-compose.yml
-
-      - name: Build and push images
-        run: |
-          docker build -f ./front/Dockerfile ./front -t ${{ secrets.DOCKER_HUB_USERNAME }}/pokedex-front
-          docker build -f ./bff/Dockerfile ./bff -t ${{ secrets.DOCKER_HUB_USERNAME }}/pokedex-bff
-          docker push ${{ secrets.DOCKER_HUB_USERNAME }}/pokedex-front
-          docker push ${{ secrets.DOCKER_HUB_USERNAME }}/pokedex-bff
       
   deploy:
     runs-on: ubuntu-latest
@@ -45,7 +38,7 @@ jobs:
       - name: Copy docker.compose.yml to server
         uses: garygrossgarten/github-action-scp@release
         with:
-          local: /test/docker-compose.yml
+          local: test
           remote: ./docker-compose.yml
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
