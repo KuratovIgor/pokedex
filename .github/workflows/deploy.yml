@@ -25,14 +25,16 @@ jobs:
           envkey_VUE_APP_BASE_URI: ${{ secrets.ENV_KEY }}
           directory: ./front
 
-      - name: Build front image
-        run: docker build -f ./front/Dockerfile ./front -t ${{ secrets.DOCKER_HUB_USERNAME }}/pokedex-front
-      - name: Build bff image
-        run: docker build -f ./bff/Dockerfile ./bff -t ${{ secrets.DOCKER_HUB_USERNAME }}/pokedex-bff
-      - name: Push front image
-        run: docker push ${{ secrets.DOCKER_HUB_USERNAME }}/pokedex-front
-      - name: Push bff image
-        run: docker push ${{ secrets.DOCKER_HUB_USERNAME }}/pokedex-bff
+      - name: Copy docker-compose
+        run: |
+          cp docker-compose.yml /test/docker-compose.yml
+
+      - name: Build and push images
+        run: |
+          docker build -f ./front/Dockerfile ./front -t ${{ secrets.DOCKER_HUB_USERNAME }}/pokedex-front
+          docker build -f ./bff/Dockerfile ./bff -t ${{ secrets.DOCKER_HUB_USERNAME }}/pokedex-bff
+          docker push ${{ secrets.DOCKER_HUB_USERNAME }}/pokedex-front
+          docker push ${{ secrets.DOCKER_HUB_USERNAME }}/pokedex-bff
       
   deploy:
     runs-on: ubuntu-latest
@@ -42,8 +44,8 @@ jobs:
       - name: Copy docker.compose.yml to server
         uses: garygrossgarten/github-action-scp@release
         with:
-          local: /docker-compose.yml
-          remote: /docker-compose.yml
+          local: test/docker-compose.yml
+          remote: test/docker-compose.yml
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}
