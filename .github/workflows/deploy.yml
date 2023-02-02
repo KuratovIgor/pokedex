@@ -23,4 +23,4 @@ jobs:
         run: ssh-keyscan -p ${{ secrets.PORT}} -H ${{ secrets.HOST }}  >> ~/.ssh/known_hosts
 
       - name: Deploy with rsync
-        run: rsync -avz -e "ssh -p ${{ secrets.PORT }}" ./front/ ${{ secrets.USERNAME }}@${{ secrets.HOST }}:/test/
+        run: rsync -avz -e "ssh -p ${{ secrets.PORT }}" ./front/ root@${{ secrets.HOST }}:/test/
