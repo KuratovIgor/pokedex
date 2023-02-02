@@ -13,14 +13,40 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Install SSH Key
-        uses: shimataro/ssh-key-action@v2
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
         with:
-          key: ${{ secrets.SSH_KEY }}
-          known_hosts: unnecessary
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_PASSWORD }}
 
-      - name: Adding Known Hosts
-        run: ssh-keyscan -p ${{ secrets.PORT}} -H ${{ secrets.HOST }}  >> ~/.ssh/known_hosts
+      - name: Create .env file
+        uses: SpicyPizza/create-envfile@v1.3.0
+        with:
+          envkey_VUE_APP_BASE_URI: ${{ secrets.ENV_KEY }}
+          directory: ./front
 
-      - name: Deploy with rsync
-        run: rsync -avz ./front/ root@${{ secrets.HOST }}:/test/
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+      - name: copy file via ssh password
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
+          port: ${{ secrets.PORT }}
+          source: "docker-compose.yml"
+          target: "/test"
+
+      - name: deploy
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
+          port: ${{ secrets.PORT }}
+          run: mv -f docker-compose.yml
+          script: |
+            docker-compose up
