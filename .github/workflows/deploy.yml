@@ -44,7 +44,7 @@ jobs:
           password: ${{ secrets.PASSWORD }}
           port: ${{ secrets.PORT }}
           source: "deploy.tar"
-          target: "/test"
+          target: "destination/folder"
 
       - name: deploy
         uses: appleboy/ssh-action@master
