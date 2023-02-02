@@ -45,8 +45,8 @@ jobs:
       - name: Copy docker.compose.yml to server
         uses: garygrossgarten/github-action-scp@release
         with:
-          local: test/docker-compose.yml
-          remote: test/docker-compose.yml
+          local: ./test/docker-compose.yml
+          remote: ./docker-compose.yml
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}
