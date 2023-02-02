@@ -33,7 +33,7 @@ jobs:
       - name: Run a multi-line script
         run: |
           mkdir ../build
-          cp -TR ../. ../build
+          cp -TR ../../ ../build
           tar -cvf deploy.tar ../build/
 
       - name: copy file via ssh password
@@ -44,7 +44,7 @@ jobs:
           password: ${{ secrets.PASSWORD }}
           port: ${{ secrets.PORT }}
           source: "deploy.tar"
-          target: "destination/folder"
+          target: "test"
 
       - name: deploy
         uses: appleboy/ssh-action@master
