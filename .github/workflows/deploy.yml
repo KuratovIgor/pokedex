@@ -33,7 +33,7 @@ jobs:
       - name: Run a multi-line script
         run: |
           mkdir ../build
-          cp -TR . ../build
+          cp docker-compose.yml ../build
           tar -cvf deploy.tar ../build/
 
       - name: copy file via ssh password
